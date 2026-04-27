@@ -1,30 +1,26 @@
-package br.edu.ufersa.Aplicativo.model.entity;
+package br.edu.ufersa.Aplicativo.model.entity; //localização do pacote
 
-import java.time.LocalDate;
-import java.util.List;
+import java.time.LocalDate; //importa a interface LocalDate
+import java.util.List;  //importa a interface List
 
 public class Prova {
-    private LocalDate dataDeCriacao;
-    private List<Questao> questoes;
-    private Disciplina disciplina;
+    //atributos
+    //numero de questões 
+    //tipo(multiplaescolha,verdadeiro ou falso , descritiva)
+    //quantidade de questões de nivel 1
+    //quantidade de questões de nivel 2
+    //quantidade de questões de nivel 3
+    //professor
+    //instituição
+    private LocalDate dataDeCriacao; //data da geração da prova
+    private List<Questao> questoes; //quais questões
+    private Disciplina disciplina; //qual disciplina
 
+    //construtor
     public Prova(List<Questao> questoes, Disciplina disciplina) {
         setDataDeCriacao(LocalDate.now());
         setQuestoes(questoes);
         setDisciplina(disciplina);
-    }
-
-    // Getters
-    public LocalDate getDataDeCriacao() {
-        return dataDeCriacao;
-    }
-
-    public List<Questao> getQuestoes() {
-        return questoes;
-    }
-
-    public Disciplina getDisciplina() {
-        return disciplina;
     }
 
     // Setters
@@ -45,4 +41,18 @@ public class Prova {
             this.disciplina = disciplina;
         }
     }
+    
+    // Getters
+    public LocalDate getDataDeCriacao() {
+        return dataDeCriacao;
+    }
+
+    public List<Questao> getQuestoes() {
+        return questoes;
+    }
+
+    public Disciplina getDisciplina() {
+        return disciplina;
+    }
+
 }

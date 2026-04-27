@@ -1,49 +1,57 @@
-package br.edu.ufersa.Aplicativo.model.entity;
-
-import java.util.ArrayList;
-import java.util.List;
+package br.edu.ufersa.Aplicativo.model.entity; //localização do pacote
 
 public class Professor {
-
-    private String login;
-    private String senha;
+    //atributos
     private String nome;
-    private List<Disciplina> disciplinas;
+    private String email;
+    private String senha;
+    //private List<Disciplina> disciplinas;
 
-    public Professor(String nome, String login, String senha) {
-        this.nome = nome;
-        this.login = login;
-        this.senha = senha;
-        this.disciplinas = new ArrayList<>();
+    //construtor
+    public Professor(String nome, String email, String senha) {
+        setNome(nome);
+        setEmail(email);
+        setSenha(senha);
+        //setDisciplinas(new ArrayList<>());
     }
 
-    public void adicionarDisciplinanoProfessor(Disciplina disciplina) {
-        if (disciplina != null && !this.disciplinas.contains(disciplina)) {
-            this.disciplinas.add(disciplina);
+    //setters
+    public void setNome(String nome) {
+        if(nome != null && !(nome.trim().isEmpty())){
+            this.nome = nome;
         }
     }
-
-    public String getLogin() {
-        return login;
+    public void setEmail(String email) {
+        if(email != null && !(email.trim().isEmpty())){
+            this.email = email;
+        }
     }
-
+    public void setSenha(String senha) {
+        if(senha != null && !(senha.trim().isEmpty())){
+            this.senha = senha;
+        }
+    }
+    
+    //getters
+    public String getNome() {
+        return nome;
+    }
+    public String getEmail() {
+        return email;
+    }
     public String getSenha() {
         return senha;
     }
 
-    public String getNome() {
-        return nome;
-    }
 
-    public List<Disciplina> getDisciplinas() {
-        return disciplinas;
-    }
+    // public void adicionarDisciplinanoProfessor(Disciplina disciplina) {
+    //     if (disciplina != null && !this.disciplinas.contains(disciplina)) {
+    //         this.disciplinas.add(disciplina);
+    //     }
+    // }
+    // public List<Disciplina> getDisciplinas() {
+    //     return disciplinas;
+    // }
 
-    public void setSenha(String senha) {
-        this.senha = senha;
-    }
 
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
 }
