@@ -4,9 +4,9 @@ public class VerdadeiroFalso extends Questao {
     private boolean resposta;
 
     public VerdadeiroFalso(
-            int codigo, String enunciado, String assunto, Disciplina disciplina, Dificuldade dificuldade, String resposta
+            int codigo, String enunciado, String assunto, Disciplina disciplina, Nivel nivel, String resposta
     ) {
-        super(codigo, enunciado, assunto, disciplina, dificuldade);
+        super(codigo, enunciado, assunto, disciplina, nivel);
         setResposta(resposta);
     }
 

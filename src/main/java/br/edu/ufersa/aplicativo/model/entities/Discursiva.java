@@ -4,9 +4,9 @@ public class Discursiva extends Questao {
     private String resposta;
 
     public Discursiva(
-            int codigo, String enunciado, String assunto, Disciplina disciplina, Dificuldade dificuldade, String resposta
+            int codigo, String enunciado, String assunto, Disciplina disciplina, Nivel nivel, String resposta
     ) {
-        super(codigo, enunciado, assunto, disciplina, dificuldade);
+        super(codigo, enunciado, assunto, disciplina, nivel);
         setResposta(resposta);
     }
 

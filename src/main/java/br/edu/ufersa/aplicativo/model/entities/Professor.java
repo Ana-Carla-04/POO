@@ -1,7 +1,6 @@
 package br.edu.ufersa.aplicativo.model.entities;
 
 public class Professor {
-    private int id;
     private String nome;
     private String email;
     private String senha;
@@ -10,12 +9,6 @@ public class Professor {
         setNome(nome);
         setEmail(email);
         setSenha(senha);
-    }
-
-    public void setId(int id) {
-        if (id > 0) {
-            this.id = id;
-        }
     }
 
     public void setNome(String nome) {
@@ -32,10 +25,6 @@ public class Professor {
         if(senha != null && !(senha.trim().isEmpty())){
             this.senha = senha;
         }
-    }
-
-    public int getId() {
-        return id;
     }
 
     public String getNome() {
