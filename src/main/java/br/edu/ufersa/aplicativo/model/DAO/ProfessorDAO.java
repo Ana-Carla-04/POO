@@ -1,16 +1,19 @@
 package br.edu.ufersa.aplicativo.model.DAO;
 
-import br.edu.ufersa.aplicativo.model.entities.Professor;
+//esta classe que será feito a implementação dos metodos e como eles vão mexe no banco de dados  
 
-import java.sql.*;
+import br.edu.ufersa.aplicativo.model.entities.Professor; //importa a classe Professor 
+
+import java.sql.*; //importa tudo do pacote sql
 import java.util.List;
 import java.util.LinkedList;
 
-public class ProfessorDAO implements DAO<Professor> {
-    private static final String sql_inserir = "INSERT INTO professor (nome, email, senha) VALUES (?, ?, ?);";
-    private static final String sql_alterar = "UPDATE professor SET email = ?, senha = ? WHERE nome = ?;";
-    private static final String sql_deletar = "DELETE FROM professor WHERE nome = ?;";
-    private static final String sql_listar = "SELECT * FROM professor";
+public class ProfessorDAO implements DAO<Professor> { //usou a interface para definou que não será mais tipo genérico e sim tipo Professor
+    //inseri na tabela Professor do banco de dados:
+    private static final String sql_inserir = "INSERT INTO professor (nome, email, senha) VALUES (?, ?, ?);"; //inseri nome, email e senha
+    private static final String sql_alterar = "UPDATE professor SET email = ?, senha = ? WHERE nome = ?;"; //altera o email e a senha baseado no nome
+    private static final String sql_deletar = "DELETE FROM professor WHERE nome = ?;"; //deleta baseado no nome
+    private static final String sql_listar = "SELECT * FROM professor"; //list a todos os professores
 
     private Connection conexao;
 
