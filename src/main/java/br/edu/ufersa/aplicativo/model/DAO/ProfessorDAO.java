@@ -41,10 +41,10 @@ public class ProfessorDAO implements DAO<Professor> { //usou a interface para de
                     professor.setId(idGerado);  // Coloca o ID no objeto
                 }
             }   
+            //Fecha o formulário
+            ps.close();
         }
             
-        //Fecha o formulário
-        ps.close();
     }
 
     @Override //sobrecrita do método da inteface
@@ -83,6 +83,7 @@ public class ProfessorDAO implements DAO<Professor> { //usou a interface para de
             String email = rs.getString("email");  //pega o valor da coluna email e transforma de sql para String
             String senha  = rs.getString("senha");  //pega o valor da coluna senha e transforma de sql para String
             Professor professor = new Professor(nome, email, senha); //chama o construtor de Professor e cria um objeto Professor com seus parâmetros
+            professor.setId(id);
             professores.add(professor); //adiciona o objeto professor a lista de professores
         }
         rs.close(); //fecha o ResultSet
