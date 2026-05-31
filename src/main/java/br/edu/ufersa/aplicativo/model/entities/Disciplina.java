@@ -3,21 +3,12 @@ package br.edu.ufersa.aplicativo.model.entities;
 import java.util.List;
 
 public class Disciplina {
-    private int id; 
     private String nome;
     private String codigo;
     private Professor professor;  
-    private List<String> assuntos;
+    private List<Assunto> assuntos;
 
-    //construtor
-    public Disciplina(String nome, String codigo,Professor prof, List<String> assuntos) {
-        setNome(nome);
-        setCodigo(codigo);
-        setProfessor(prof);
-        setAssuntos(assuntos);
-    }
-    public Disciplina(int id,String nome, String codigo,Professor prof, List<String> assuntos) {
-        setId(id);
+    public Disciplina(String nome, String codigo,Professor prof, List<Assunto> assuntos) {
         setNome(nome);
         setCodigo(codigo);
         setProfessor(prof);
@@ -25,11 +16,6 @@ public class Disciplina {
     }
 
     //setters
-    public void setId(int id) {
-        if (id > 0) {
-            this.id = id;
-        }
-    }
     public void setNome(String nome) {
         if (nome != null && !nome.trim().isEmpty()) {
             this.nome = nome;
@@ -47,16 +33,13 @@ public class Disciplina {
         }
     }
 
-    public void setAssuntos(List<String> assuntos) {
+    public void setAssuntos(List<Assunto> assuntos) {
         if (assuntos != null && !assuntos.isEmpty()) {
             this.assuntos = assuntos;
         }
     }
 
     //getters
-     public int getId() {
-        return id;
-    }
     public String getNome() {
         return nome;
     }
@@ -68,7 +51,7 @@ public class Disciplina {
         return professor;
     }
 
-    public List<String> getAssuntos() {
+    public List<Assunto> getAssuntos() {
         return assuntos;
     }
 
