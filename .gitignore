@@ -1,2 +1,5 @@
 .idea
 .mvn
+
+out/
+target/

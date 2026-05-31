@@ -3,22 +3,21 @@ package br.edu.ufersa.aplicativo.model.entities;
 import java.util.List;
 
 public class Disciplina {
-    private int id; 
+    private int id;
     private String nome;
     private String codigo;
     private Professor professor;  
-    private List<String> assuntos;
+    private List<Assunto> assuntos;
 
-    public Disciplina(int id,String nome, String codigo,Professor prof, List<String> assuntos) {
-        setId(id);
+    public Disciplina(String nome, String codigo,Professor prof, List<Assunto> assuntos) {
         setNome(nome);
         setCodigo(codigo);
         setProfessor(prof);
         setAssuntos(assuntos);
     }
 
-    public Disciplina(int id,String nome, String codigo,Professor prof) {
-        setId(id);
+    public Disciplina(String nome, String codigo, Professor prof){
+
         setNome(nome);
         setCodigo(codigo);
         setProfessor(prof);
@@ -26,18 +25,16 @@ public class Disciplina {
 
     public Disciplina(){};
 
-    public Disciplina(int id, String nome, String codigo) {
-        setId(id);
-        setNome(nome);
-        setCodigo(codigo);
+    public Disciplina(String disciplinaNome, String disciplinaCodigo) {
+        setNome(disciplinaNome);
+        setCodigo(disciplinaCodigo);
     }
 
     //setters
-    public void setId(int id) {
-        if (id > 0) {
-            this.id = id;
-        }
+    public void setId(int id){
+        this.id = id;
     }
+
     public void setNome(String nome) {
         if (nome != null && !nome.trim().isEmpty()) {
             this.nome = nome;
@@ -55,16 +52,17 @@ public class Disciplina {
         }
     }
 
-    public void setAssuntos(List<String> assuntos) {
+    public void setAssuntos(List<Assunto> assuntos) {
         if (assuntos != null && !assuntos.isEmpty()) {
             this.assuntos = assuntos;
         }
     }
 
     //getters
-     public int getId() {
+    public int getId() {
         return id;
     }
+
     public String getNome() {
         return nome;
     }
@@ -72,11 +70,12 @@ public class Disciplina {
     public String getCodigo() {
         return codigo;
     }
+
     public Professor getProfessor() {
         return professor;
     }
 
-    public List<String> getAssuntos() {
+    public List<Assunto> getAssuntos() {
         return assuntos;
     }
 

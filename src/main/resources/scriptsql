@@ -14,6 +14,7 @@ CREATE TABLE disciplina (
     nome VARCHAR(150) NOT NULL,
     codigo VARCHAR(20) NOT NULL,
     professor_id INT NOT NULL,
+
     FOREIGN KEY (professor_id) REFERENCES professor(id) ON DELETE CASCADE
 );
 
@@ -21,6 +22,7 @@ CREATE TABLE assunto (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(150) NOT NULL,
     disciplina_id INT NOT NULL,
+
     FOREIGN KEY (disciplina_id) REFERENCES disciplina(id) ON DELETE CASCADE
 );
 
@@ -31,6 +33,7 @@ CREATE TABLE questao (
     nivel INT NOT NULL,
     tipo VARCHAR(50) NOT NULL,
     disciplina_id INT NOT NULL,
+
     FOREIGN KEY (disciplina_id) REFERENCES disciplina(id) ON DELETE CASCADE
 );
 
@@ -39,6 +42,7 @@ CREATE TABLE alternativa (
     texto_alternativa TEXT NOT NULL,
     questao_id INT NOT NULL,
     verdadeira BOOLEAN NULL,
+
     FOREIGN KEY (questao_id) REFERENCES questao(id) ON DELETE CASCADE
 );
 
@@ -48,12 +52,14 @@ CREATE TABLE prova (
     instituicao VARCHAR(150) NOT NULL,
     data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     disciplina_id INT NOT NULL,
+
     FOREIGN KEY (disciplina_id) REFERENCES disciplina(id) ON DELETE CASCADE
 );
 
 CREATE TABLE prova_questao (
     prova_id INT NOT NULL,
     questao_id INT NOT NULL,
+
     PRIMARY KEY (prova_id, questao_id),
     FOREIGN KEY (prova_id) REFERENCES prova(id) ON DELETE CASCADE,
     FOREIGN KEY (questao_id) REFERENCES questao(id) ON DELETE CASCADE

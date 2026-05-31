@@ -1,7 +1,6 @@
 package br.edu.ufersa.aplicativo.model.DAO;
 
 import br.edu.ufersa.aplicativo.model.entities.*;
-
 import java.sql.*;
 import java.util.*;
 
@@ -9,13 +8,14 @@ public class QuestaoDAO implements DAO<Questao> {
     private static final String sql_inserir = "INSERT INTO questao (enunciado, nivel, tipo, disciplina_id) VALUES (?, ?, ?, ?);";
     private static final String sql_alterar = "UPDATE questao SET enunciado = ?, nivel = ?, tipo = ?, disciplina_id = ? WHERE id = ?;";
     private static final String sql_deletar = "DELETE FROM questao WHERE id = ?;";
-    private static final String sql_listar = "SELECT q.*, d.nome as disciplina_nome, d.codigo as disciplina_codigo " +
-            "FROM questao q, disciplina d WHERE q.disciplina_id = d.id;";
-    private static final String sql_buscarPorId = "SELECT q.*, d.nome as disciplina_nome, d.codigo as disciplina_codigo " +
-            "FROM questao q, disciplina d WHERE q.disciplina_id = d.id AND q.id = ?;";
 
-    private static final String sql_buscarAlternativas = "SELECT texto_alternativa FROM alternativa WHERE questao_id = ? ORDER BY id;";
-    private static final String sql_inserirAlternativa = "INSERT INTO alternativa (questao_id, texto_alternativa) VALUES (?, ?);";
+    private static final String sql_listar = "SELECT q.*, d.nome as disciplina_nome, d.codigo as disciplina_codigo " +
+            "FROM questao q INNER JOIN disciplina d ON q.disciplina_id = d.id;";
+    private static final String sql_buscarPorId = "SELECT q.*, d.nome as disciplina_nome, d.codigo as disciplina_codigo " +
+            "FROM questao q INNER JOIN disciplina d ON q.disciplina_id = d.id WHERE q.id = ?;";
+
+    private static final String sql_buscarAlternativas = "SELECT texto_alternativa, verdadeira FROM alternativa WHERE questao_id = ? ORDER BY id;";
+    private static final String sql_inserirAlternativa = "INSERT INTO alternativa (questao_id, texto_alternativa, verdadeira) VALUES (?, ?, ?);";
     private static final String sql_deletarAlternativas = "DELETE FROM alternativa WHERE questao_id = ?;";
 
     private Connection conexao;
@@ -55,31 +55,29 @@ public class QuestaoDAO implements DAO<Questao> {
         if (questao instanceof MultiplaEscolha) {
             MultiplaEscolha me = (MultiplaEscolha) questao;
             if (me.getAlternativas() != null && !me.getAlternativas().isEmpty()) {
-                inserirAlternativas(me.getCodigo(), me.getAlternativas());
+                salvarAlternativasEmLote(me.getCodigo(), me.getAlternativas(), null);
             }
         }
 
         if (questao instanceof VerdadeiroFalso) {
             VerdadeiroFalso vf = (VerdadeiroFalso) questao;
-            String sqlAlt = "INSERT INTO alternativa (texto_alternativa, questao_id, verdadeira) VALUES (?, ?, ?);";
-
-            try (PreparedStatement psAlt = conexao.prepareStatement(sqlAlt)) {
-                for (int i = 0; i < vf.getAlternativas().size(); i++) {
-                    psAlt.setString(1, vf.getAlternativas().get(i));
-                    psAlt.setInt(2, vf.getCodigo());
-                    psAlt.setBoolean(3, vf.getRespostas().get(i));
-
-                    psAlt.executeUpdate();
-                }
+            if (vf.getAlternativas() != null && !vf.getAlternativas().isEmpty()) {
+                salvarAlternativasEmLote(vf.getCodigo(), vf.getAlternativas(), vf.getRespostas());
             }
         }
     }
 
-    private void inserirAlternativas(int questaoId, List<String> alternativas) throws SQLException {
+    private void salvarAlternativasEmLote(int questaoId, List<String> alternativas, List<Boolean> respostas) throws SQLException {
         try (PreparedStatement ps = conexao.prepareStatement(sql_inserirAlternativa)) {
-            for (String alt : alternativas) {
+            for (int i = 0; i < alternativas.size(); i++) {
                 ps.setInt(1, questaoId);
-                ps.setString(2, alt);
+                ps.setString(2, alternativas.get(i));
+
+                if (respostas != null && i < respostas.size()) {
+                    ps.setBoolean(3, respostas.get(i));
+                } else {
+                    ps.setNull(3, Types.BOOLEAN);
+                }
                 ps.addBatch();
             }
             ps.executeBatch();
@@ -91,9 +89,7 @@ public class QuestaoDAO implements DAO<Questao> {
         if (questao == null) {
             throw new IllegalArgumentException("Questão não pode ser nula");
         }
-
         deletarAlternativas(questao.getCodigo());
-
         try (PreparedStatement ps = conexao.prepareStatement(sql_deletar)) {
             ps.setInt(1, questao.getCodigo());
             ps.executeUpdate();
@@ -131,10 +127,16 @@ public class QuestaoDAO implements DAO<Questao> {
         }
 
         deletarAlternativas(questao.getCodigo());
+
         if (questao instanceof MultiplaEscolha) {
             MultiplaEscolha me = (MultiplaEscolha) questao;
             if (me.getAlternativas() != null && !me.getAlternativas().isEmpty()) {
-                inserirAlternativas(me.getCodigo(), me.getAlternativas());
+                salvarAlternativasEmLote(me.getCodigo(), me.getAlternativas(), null);
+            }
+        } else if (questao instanceof VerdadeiroFalso) {
+            VerdadeiroFalso vf = (VerdadeiroFalso) questao;
+            if (vf.getAlternativas() != null && !vf.getAlternativas().isEmpty()) {
+                salvarAlternativasEmLote(vf.getCodigo(), vf.getAlternativas(), vf.getRespostas());
             }
         }
     }
@@ -143,7 +145,6 @@ public class QuestaoDAO implements DAO<Questao> {
     public List<Questao> listar() throws SQLException {
         try (Statement st = conexao.createStatement();
              ResultSet rs = st.executeQuery(sql_listar)) {
-
             List<Questao> questoes = new LinkedList<>();
             while (rs.next()) {
                 questoes.add(criarQuestaoDoResultSet(rs));
@@ -153,7 +154,7 @@ public class QuestaoDAO implements DAO<Questao> {
     }
 
     public List<Questao> buscarPorNivel(Nivel nivel) throws SQLException {
-        String sql = sql_listar + " AND q.nivel = ?;";
+        String sql = sql_listar + " WHERE q.nivel = ?;";
         try (PreparedStatement ps = conexao.prepareStatement(sql)) {
             ps.setInt(1, nivel.getValor());
             try (ResultSet rs = ps.executeQuery()) {
@@ -167,53 +168,70 @@ public class QuestaoDAO implements DAO<Questao> {
     }
 
     private Questao criarQuestaoDoResultSet(ResultSet rs) throws SQLException {
-        Disciplina disciplina = new Disciplina(
-                rs.getInt("disciplina_id"),
-                rs.getString("disciplina_nome"),
-                rs.getString("disciplina_codigo"),
-                null,
-                null
-        );
+        Disciplina disciplina = new Disciplina(rs.getString("disciplina_nome"), rs.getString("disciplina_codigo"));
+        disciplina.setId(rs.getInt("disciplina_id"));
 
         String tipo = rs.getString("tipo");
-        Questao questao;
+        int idQuestao = rs.getInt("id");
+        String enunciado = rs.getString("enunciado");
+        Nivel nivel = Nivel.deInt(rs.getInt("nivel"));
 
         if ("MultiplaEscolha".equals(tipo)) {
             MultiplaEscolha me = new MultiplaEscolha();
-            me.setCodigo(rs.getInt("id"));
-            me.setEnunciado(rs.getString("enunciado"));
-
-            int valorNivel = rs.getInt("nivel");
-            me.setNivel(Nivel.deInt(valorNivel));
-
+            me.setCodigo(idQuestao);
+            me.setEnunciado(enunciado);
+            me.setNivel(nivel);
             me.setDisciplina(disciplina);
 
-            me.setAlternativas(buscarAlternativas(me.getCodigo()));
-            questao = me;
-        } else {
-            questao = new MultiplaEscolha();
-            questao.setCodigo(rs.getInt("id"));
-            questao.setEnunciado(rs.getString("enunciado"));
-
-            int valorNivel = rs.getInt("nivel");
-            questao.setNivel(Nivel.deInt(valorNivel));
-
-            questao.setDisciplina(disciplina);
-        }
-
-        return questao;
-    }
-
-    private List<String> buscarAlternativas(int questaoId) throws SQLException {
-        try (PreparedStatement ps = conexao.prepareStatement(sql_buscarAlternativas)) {
-            ps.setInt(1, questaoId);
-            try (ResultSet rs = ps.executeQuery()) {
-                List<String> alternativas = new LinkedList<>();
-                while (rs.next()) {
-                    alternativas.add(rs.getString("texto_alternativa"));
+            List<String> alternativas = new ArrayList<>();
+            try (PreparedStatement ps = conexao.prepareStatement(sql_buscarAlternativas)) {
+                ps.setInt(1, idQuestao);
+                try (ResultSet rsA = ps.executeQuery()) {
+                    while (rsA.next()) {
+                        alternativas.add(rsA.getString("texto_alternativa"));
+                    }
                 }
-                return alternativas;
             }
+            me.setAlternativas(alternativas);
+            return me;
+
+        } else if ("VerdadeiroFalso".equals(tipo)) {
+            VerdadeiroFalso vf = new VerdadeiroFalso();
+            vf.setCodigo(idQuestao);
+            vf.setEnunciado(enunciado);
+            vf.setNivel(nivel);
+            vf.setDisciplina(disciplina);
+
+            StringBuilder gabaritoMontado = new StringBuilder();
+
+            try (PreparedStatement ps = conexao.prepareStatement(sql_buscarAlternativas)) {
+                ps.setInt(1, idQuestao);
+                try (ResultSet rsA = ps.executeQuery()) {
+                    while (rsA.next()) {
+                        String textoAlt = rsA.getString("texto_alternativa");
+                        boolean valorVerdade = rsA.getBoolean("verdadeira");
+
+                        vf.getAlternativas().add(textoAlt);
+
+                        gabaritoMontado.append(valorVerdade ? "V" : "F").append("-");
+                    }
+                }
+            }
+
+            if (gabaritoMontado.length() > 0) {
+                gabaritoMontado.setLength(gabaritoMontado.length() - 1);
+                vf.setResposta(gabaritoMontado.toString());
+            }
+
+            return vf;
+
+        } else {
+            MultiplaEscolha padrao = new MultiplaEscolha();
+            padrao.setCodigo(idQuestao);
+            padrao.setEnunciado(enunciado);
+            padrao.setNivel(nivel);
+            padrao.setDisciplina(disciplina);
+            return padrao;
         }
     }
 

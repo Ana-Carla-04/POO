@@ -105,9 +105,9 @@ public class ProvaDAO implements DAO<Prova> {
              ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-                int disciplinaId = rs.getInt("disciplina_id");
+                String disciplinaCodigo = rs.getString("disciplina_codigo");
 
-                Disciplina disc = disciplinaDAO.buscarPorId(disciplinaId);
+                Disciplina disc = disciplinaDAO.buscarPorCodigo(disciplinaCodigo);
 
                 List<Questao> questoesDaProva = new ArrayList<>();
 

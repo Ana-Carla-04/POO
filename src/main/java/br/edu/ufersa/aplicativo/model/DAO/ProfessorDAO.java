@@ -22,29 +22,25 @@ public class ProfessorDAO implements DAO<Professor> { //usou a interface para de
         this.conexao = conexao;
     }
 
-    @Override //subescrita do método da interface DAO
+    @Override //subescrita do metodo da interface DAO
     public void inserir(Professor professor) throws SQLException {
-        if (professor == null){
+        if (professor == null) {
             throw new IllegalArgumentException("Professor não pode ser nulo");
         }
-        try(PreparedStatement ps =  conexao.prepareStatement(sql_inserir,  Statement.RETURN_GENERATED_KEYS)){; // PreparedStatement prepara o "formulário" e faz sql_inserir ter ligação com o banco
+        PreparedStatement ps =  conexao.prepareStatement(sql_inserir, Statement.RETURN_GENERATED_KEYS);
+        // PreparedStatement prepara o "formulário" e faz sql_inserir ter ligação com o banco
         // preenche cada ? com os valores
         ps.setString(1, professor.getNome()); // 1º ? = nome
         ps.setString(2, professor.getEmail()); // 2º ? = email
         ps.setString(3, professor.getSenha()); // 3º ? = senha
         //Executa o comando já montado
         ps.executeUpdate();
-            //id gerado pelo banco                                                                              
-            try (ResultSet rs = ps.getGeneratedKeys()) {
-                if (rs.next()) {
-                    int idGerado = rs.getInt(1);
-                    professor.setId(idGerado);  // Coloca o ID no objeto
-                }
-            }   
-            //Fecha o formulário
-            ps.close();
+        //id gerado pelo banco
+        ResultSet rs = ps.getGeneratedKeys();
+        if (rs.next()) {
+            int idGerado = rs.getInt(1);
+            professor.setId(idGerado);  // Coloca o ID no objeto
         }
-            
     }
 
     @Override //sobrecrita do método da inteface

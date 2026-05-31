@@ -13,7 +13,7 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-
+    // Main para testar criação das classes Professor, Disciplina, Questão e Prova implementados no bd
         try (Connection conexao = Conexao.abrirConexao()) {
 
             System.out.println("\nLimpando a database");
@@ -28,7 +28,7 @@ public class Main {
             Professor prof = new Professor("Gadelha", "gadelha@ufersa.edu.br", "poomelhormateria");
             professorDAO.inserir(prof);
 
-            Disciplina disciplinaTeste = new Disciplina(0, "Programação Orientada a Objetos", "POO-2026");
+            Disciplina disciplinaTeste = new Disciplina("Programação Orientada a Objetos", "POO-2026");
             disciplinaTeste.setProfessor(prof);
             disciplinaDAO.inserir(disciplinaTeste);
 
@@ -65,7 +65,7 @@ public class Main {
             listaBaseQuestoes.add(q1); listaBaseQuestoes.add(q2); listaBaseQuestoes.add(q3); listaBaseQuestoes.add(q4); listaBaseQuestoes.add(q5);
 
 
-            System.out.println("\nCriando e Salvando a PROVA A");
+            System.out.println("\nCriando a PROVA A");
             List<Questao> questoesProvaA = new ArrayList<>(listaBaseQuestoes);
             Collections.shuffle(questoesProvaA);
 
@@ -74,7 +74,7 @@ public class Main {
             provaDAO.inserir(provaA);
 
 
-            System.out.println("\nCriando e Salvando a PROVA B (Com as mesmas questões, mas outra ordem)");
+            System.out.println("\nCriando a PROVA B");
             List<Questao> questoesProvaB = new ArrayList<>(listaBaseQuestoes);
 
             // Força a ordem a ser obrigatoriamente diferente da Prova A

@@ -12,11 +12,9 @@ public class Professor {
         setEmail(email);
         setSenha(senha);
     }
-    public Professor(int id, String nome, String email, String senha) {
-        setId(id);
-        setNome(nome);
-        setEmail(email);
-        setSenha(senha);
+
+    public Professor() {
+
     }
 
     //setters
