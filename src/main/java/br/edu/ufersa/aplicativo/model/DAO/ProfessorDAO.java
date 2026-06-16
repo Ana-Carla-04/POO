@@ -4,7 +4,12 @@ package br.edu.ufersa.aplicativo.model.DAO;
 
 import br.edu.ufersa.aplicativo.model.entities.Professor; //importa a classe Professor
 
-import java.sql.*; //importa tudo do pacote sql
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 import java.util.List;
 import java.util.LinkedList;
 

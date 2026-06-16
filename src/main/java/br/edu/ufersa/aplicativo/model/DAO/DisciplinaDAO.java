@@ -2,8 +2,16 @@ package br.edu.ufersa.aplicativo.model.DAO;
 
 import br.edu.ufersa.aplicativo.model.entities.Disciplina;
 import br.edu.ufersa.aplicativo.model.entities.Professor;
-import java.sql.*;
-import java.util.*;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 public class DisciplinaDAO implements DAO<Disciplina>{
     private static final String sql_inserir = "INSERT INTO disciplina (nome, codigo, professor_id) VALUES (?,?,?);";

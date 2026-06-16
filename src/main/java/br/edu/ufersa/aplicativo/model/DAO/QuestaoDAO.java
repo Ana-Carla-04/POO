@@ -1,8 +1,21 @@
 package br.edu.ufersa.aplicativo.model.DAO;
 
-import br.edu.ufersa.aplicativo.model.entities.*;
-import java.sql.*;
-import java.util.*;
+import br.edu.ufersa.aplicativo.model.entities.Disciplina;
+import br.edu.ufersa.aplicativo.model.entities.Nivel;
+import br.edu.ufersa.aplicativo.model.entities.MultiplaEscolha;
+import br.edu.ufersa.aplicativo.model.entities.Questao;
+import br.edu.ufersa.aplicativo.model.entities.VerdadeiroFalso;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Types;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 public class QuestaoDAO implements DAO<Questao> {
     private static final String sql_inserir = "INSERT INTO questao (enunciado, nivel, tipo, disciplina_id) VALUES (?, ?, ?, ?);";

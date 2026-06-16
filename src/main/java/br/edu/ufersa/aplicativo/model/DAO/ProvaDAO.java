@@ -4,7 +4,13 @@ import br.edu.ufersa.aplicativo.model.entities.Prova;
 import br.edu.ufersa.aplicativo.model.entities.Questao;
 import br.edu.ufersa.aplicativo.model.entities.Disciplina;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 import java.util.ArrayList;
 import java.util.List;
 
