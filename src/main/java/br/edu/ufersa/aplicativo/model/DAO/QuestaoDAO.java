@@ -33,8 +33,10 @@ public class QuestaoDAO implements DAO<Questao> {
 
     private Connection conexao;
 
-    public QuestaoDAO(Connection conexao) {
-        this.conexao = conexao;
+    public QuestaoDAO(Connection conexao) throws SQLException{
+        if (conexao != null && !conexao.isClosed()) {
+            this.conexao = conexao;
+        } else throw new IllegalArgumentException("Conexão inválida");
     }
 
     @Override

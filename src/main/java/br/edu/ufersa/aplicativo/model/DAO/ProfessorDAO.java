@@ -23,8 +23,10 @@ public class ProfessorDAO implements DAO<Professor> { //usou a interface para de
     private Connection conexao; //armazena a conexao com o banco de dados, como um atributo
 
     //construtor da classe usando o atributo de conexão
-    public ProfessorDAO(Connection conexao) {
-        this.conexao = conexao;
+    public ProfessorDAO(Connection conexao) throws SQLException {
+        if (conexao != null && !conexao.isClosed()) {
+            this.conexao = conexao;
+        } else throw new IllegalArgumentException("Conexão inválida");
     }
 
     @Override //subescrita do metodo da interface DAO

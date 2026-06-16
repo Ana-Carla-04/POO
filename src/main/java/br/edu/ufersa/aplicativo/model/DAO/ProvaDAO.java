@@ -17,8 +17,10 @@ import java.util.List;
 public class ProvaDAO implements DAO<Prova> {
     private Connection conexao;
 
-    public ProvaDAO(Connection conexao) {
-        this.conexao = conexao;
+    public ProvaDAO(Connection conexao) throws SQLException {
+        if (conexao != null && !conexao.isClosed()) {
+            this.conexao = conexao;
+        } else throw new IllegalArgumentException("Conexão inválida");
     }
 
     @Override

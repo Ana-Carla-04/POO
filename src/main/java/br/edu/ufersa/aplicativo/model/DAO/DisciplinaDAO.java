@@ -24,8 +24,10 @@ public class DisciplinaDAO implements DAO<Disciplina>{
 
     private Connection conexao;
 
-    public DisciplinaDAO(Connection conexao){
-        this.conexao = conexao;
+    public DisciplinaDAO(Connection conexao) throws SQLException {
+        if (conexao != null && !conexao.isClosed()) {
+            this.conexao = conexao;
+        } else throw new IllegalArgumentException("Conexão inválida");
     }
 
     @Override

@@ -24,8 +24,10 @@ public class AssuntoDAO implements DAO<Assunto> {
 
     private Connection conexao;
 
-    public AssuntoDAO(Connection conexao) {
-        this.conexao = conexao;
+    public AssuntoDAO(Connection conexao) throws SQLException{
+        if (conexao != null && !conexao.isClosed()) {
+            this.conexao = conexao;
+        } else throw new IllegalArgumentException("Conexão inválida");
     }
 
     @Override
