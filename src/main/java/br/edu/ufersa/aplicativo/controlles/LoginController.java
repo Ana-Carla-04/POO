@@ -29,9 +29,34 @@ public class LoginController {
             return;
         }
 
-        if (email.equals("admin@email.com") && password.equals("123456")) {
-            showAlert(AlertType.INFORMATION, "Login realizado!", "Bem-vindo",
-                    "Bem-vindo ao Gerador de Provas!");
+        // ═══════════════════════════════════════════════════════════════
+        // LOGIN BEM SUCEDIDO - VAI PARA TELA INICIAL
+        // ═══════════════════════════════════════════════════════════════
+        if (email.equals("q") && password.equals("q")) {
+            try {
+                // Salvar o estado atual (tela cheia/maximizado)
+                boolean currentFullScreen = Main.isFullScreen();
+                boolean currentMaximized = Main.isMaximized();
+
+                // Carregar a tela inicial
+                Main.carregarTela("/br/edu/ufersa/aplicativo/views/TelaInicialView.fxml",
+                        "Gerador de Provas - Início");
+
+                // Restaurar o estado
+                javafx.application.Platform.runLater(() -> {
+                    if (currentFullScreen) {
+                        Main.enterFullScreen();
+                    }
+                    if (currentMaximized) {
+                        Main.toggleMaximized();
+                    }
+                });
+
+            } catch (Exception e) {
+                showAlert(AlertType.ERROR, "Erro", "Erro de navegação",
+                        "Não foi possível carregar a tela inicial: " + e.getMessage());
+                e.printStackTrace();
+            }
         } else {
             showAlert(AlertType.ERROR, "Falha no login", "Erro",
                     "Email ou senha incorretos.");

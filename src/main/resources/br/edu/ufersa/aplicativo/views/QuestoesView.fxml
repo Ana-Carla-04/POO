@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane
+        prefWidth="1280" prefHeight="750"
+        styleClass="root-main"
+        stylesheets="@../css/QuestoesStyle.css"
+        xmlns="http://javafx.com/javafx/21"
+        xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="br.edu.ufersa.aplicativo.controlles.QuestoesController">
+
+    <top>
+        <HBox styleClass="topbar" alignment="CENTER_LEFT">
+            <StackPane styleClass="topbar-brand">
+                <Label styleClass="topbar-brand-label" text="Gerador de Provas"/>
+            </StackPane>
+            <HBox styleClass="topbar-title-area" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+                <padding><Insets left="24"/></padding>
+                <Label fx:id="topbarTitle" styleClass="topbar-title-label" text="Disciplina: questões"/>
+            </HBox>
+            <StackPane styleClass="topbar-icon-area" onMouseClicked="#handleVoltar">
+                <Label styleClass="topbar-icon-label" text="←"/>
+            </StackPane>
+            <StackPane styleClass="topbar-icon-area">
+                <Label styleClass="topbar-icon-label" text="&#128209;"/>
+            </StackPane>
+        </HBox>
+    </top>
+
+    <left>
+        <VBox styleClass="sidebar" prefWidth="200" minWidth="200" maxWidth="200">
+            <StackPane fx:id="menuDisciplinas" styleClass="menu-item, menu-item-selected" onMouseClicked="#handleMenuDisciplinas">
+                <HBox alignment="CENTER_LEFT" spacing="12">
+                    <padding><Insets left="18"/></padding>
+                    <Label styleClass="menu-icon" text="&#128209;"/>
+                    <Label styleClass="menu-label" text="Disciplinas"/>
+                </HBox>
+            </StackPane>
+            <StackPane fx:id="menuBuscar" styleClass="menu-item" onMouseClicked="#handleMenuBuscar">
+                <HBox alignment="CENTER_LEFT" spacing="12">
+                    <padding><Insets left="18"/></padding>
+                    <Label styleClass="menu-icon" text="&#128269;"/>
+                    <Label styleClass="menu-label" text="Buscar"/>
+                </HBox>
+            </StackPane>
+            <StackPane fx:id="menuGerarProva" styleClass="menu-item" onMouseClicked="#handleMenuGerarProva">
+                <HBox alignment="CENTER_LEFT" spacing="12">
+                    <padding><Insets left="18"/></padding>
+                    <Label styleClass="menu-icon" text="&#128196;"/>
+                    <Label styleClass="menu-label" text="Gerar Prova"/>
+                </HBox>
+            </StackPane>
+            <StackPane fx:id="menuRelatorio" styleClass="menu-item" onMouseClicked="#handleMenuRelatorio">
+                <HBox alignment="CENTER_LEFT" spacing="12">
+                    <padding><Insets left="18"/></padding>
+                    <Label styleClass="menu-icon" text="&#128202;"/>
+                    <Label styleClass="menu-label" text="Relatório"/>
+                </HBox>
+            </StackPane>
+            <StackPane fx:id="menuProvas" styleClass="menu-item" onMouseClicked="#handleMenuProvas">
+                <HBox alignment="CENTER_LEFT" spacing="12">
+                    <padding><Insets left="18"/></padding>
+                    <Label styleClass="menu-icon" text="&#128209;"/>
+                    <Label styleClass="menu-label" text="Provas"/>
+                </HBox>
+            </StackPane>
+        </VBox>
+    </left>
+
+    <center>
+        <AnchorPane styleClass="content-area">
+            <AnchorPane styleClass="painel-branco"
+                        AnchorPane.topAnchor="28"
+                        AnchorPane.bottomAnchor="28"
+                        AnchorPane.leftAnchor="28"
+                        AnchorPane.rightAnchor="28">
+
+                <ComboBox fx:id="nivelCombo"
+                          styleClass="nivel-combo"
+                          promptText="nível da questão"
+                          prefWidth="200"
+                          onAction="#handleNivelFiltro"
+                          AnchorPane.topAnchor="16"
+                          AnchorPane.leftAnchor="16"/>
+
+                <HBox spacing="16"
+                      AnchorPane.topAnchor="60"
+                      AnchorPane.bottomAnchor="16"
+                      AnchorPane.leftAnchor="16"
+                      AnchorPane.rightAnchor="16">
+
+                    <ScrollPane fx:id="listaScroll"
+                                styleClass="lista-scroll"
+                                fitToWidth="true"
+                                hbarPolicy="NEVER"
+                                prefWidth="220" minWidth="200">
+
+                        <VBox fx:id="listaContainer" styleClass="lista-container" spacing="8">
+                            <padding><Insets top="4" right="4" bottom="4" left="0"/></padding>
+                        </VBox>
+                    </ScrollPane>
+
+                    <AnchorPane fx:id="detalhePanel" styleClass="painel-detalhe" HBox.hgrow="ALWAYS">
+
+                        <VBox spacing="12"
+                              AnchorPane.topAnchor="16"
+                              AnchorPane.leftAnchor="16"
+                              AnchorPane.rightAnchor="16"
+                              AnchorPane.bottomAnchor="60">
+
+                            <HBox spacing="4" alignment="CENTER_LEFT">
+                                <Label styleClass="det-bold" text="Questão : "/>
+                                <Label fx:id="questaoCodigoLabel" styleClass="det-codigo" text=""/>
+                                <Region prefWidth="400"/>
+                                <Label styleClass="det-bold" text="Nível : "/>
+                                <Label fx:id="questaoNivelLabel" styleClass="det-bold" text=""/>
+                            </HBox>
+
+                            <HBox spacing="4" alignment="CENTER_LEFT">
+                                <Label styleClass="det-bold" text="tipo: "/>
+                                <Label fx:id="questaoTipoLabel" styleClass="det-tipo" text=""/>
+                            </HBox>
+
+                            <HBox spacing="4" alignment="TOP_LEFT">
+                                <Label styleClass="det-bold" text="Enunciado: "/>
+                                <Label fx:id="enunciadoLabel" styleClass="det-label-enunciado" wrapText="true"
+                                       HBox.hgrow="ALWAYS" text=""/>
+                            </HBox>
+
+                            <VBox spacing="4">
+                                <Label styleClass="det-bold" text="gabarito:"/>
+                                <GridPane fx:id="gabaritoGrid" hgap="30" vgap="3">
+                                    <columnConstraints>
+                                        <ColumnConstraints prefWidth="160"/>
+                                        <ColumnConstraints prefWidth="160"/>
+                                    </columnConstraints>
+                                </GridPane>
+                            </VBox>
+
+                            <HBox spacing="4">
+                                <Label styleClass="det-bold" text="Assunto: "/>
+                                <Label fx:id="assuntoLabel" styleClass="det-normal" text=""/>
+                            </HBox>
+
+                            <HBox spacing="4">
+                                <Label styleClass="det-bold" text="disciplina: "/>
+                                <Label fx:id="disciplinaLabel" styleClass="det-normal" text=""/>
+                            </HBox>
+
+                        </VBox>
+
+                        <HBox spacing="12" alignment="CENTER"
+                              AnchorPane.bottomAnchor="25"
+                              AnchorPane.leftAnchor="0"
+                              AnchorPane.rightAnchor="0">
+                            <Button fx:id="excluirButton" styleClass="btn-acao"
+                                    text="EXCLUIR" onAction="#handleExcluir"/>
+                            <Button fx:id="editarButton"  styleClass="btn-acao"
+                                    text="EDITAR"   onAction="#handleEditar"/>
+                        </HBox>
+
+                    </AnchorPane>
+
+                </HBox>
+
+            </AnchorPane>
+        </AnchorPane>
+    </center>
+
+</BorderPane>

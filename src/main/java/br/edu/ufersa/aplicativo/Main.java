@@ -56,9 +56,32 @@ public class Main extends Application {
 
         Scene scene = new Scene(root, 1280, 750);
 
-        URL cssUrl = Main.class.getResource("/br/edu/ufersa/aplicativo/css/LoginStyle.css");
-        if (cssUrl != null) {
-            scene.getStylesheets().add(cssUrl.toExternalForm());
+        // CSS base (comum a todas as telas)
+        URL cssBase = Main.class.getResource("/br/edu/ufersa/aplicativo/css/LoginStyle.css");
+        if (cssBase != null) {
+            scene.getStylesheets().add(cssBase.toExternalForm());
+            System.out.println("✅ CSS Base carregado");
+        }
+
+        // CSS específico da tela inicial (se for a tela inicial)
+        if (fxmlPath.contains("TelaInicial")) {
+            URL cssTelaInicial = Main.class.getResource("/br/edu/ufersa/aplicativo/css/TelaInicialStyle.css");
+            if (cssTelaInicial != null) {
+                scene.getStylesheets().add(cssTelaInicial.toExternalForm());
+                System.out.println("✅ CSS Tela Inicial carregado");
+            } else {
+                System.out.println("❌ CSS Tela Inicial NÃO ENCONTRADO!");
+            }
+        }
+        // CSS específico da tela inicial (se for a tela inicial)
+        if (fxmlPath.contains("Questoes")) {
+            URL cssQuestoes = Main.class.getResource("/br/edu/ufersa/aplicativo/css/QuestoesStyle.css");
+            if (cssQuestoes != null) {
+                scene.getStylesheets().add(cssQuestoes.toExternalForm());
+                System.out.println("✅ CSS Questes carregado");
+            } else {
+                System.out.println("❌ CSS Questoes NÃO ENCONTRADO!");
+            }
         }
 
         // SALVAR O ESTADO ATUAL ANTES DE TROCAR
