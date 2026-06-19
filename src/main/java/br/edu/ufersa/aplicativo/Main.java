@@ -5,7 +5,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import java.net.URL;
 
 public class Main extends Application {
@@ -60,7 +59,7 @@ public class Main extends Application {
         URL cssBase = Main.class.getResource("/br/edu/ufersa/aplicativo/css/LoginStyle.css");
         if (cssBase != null) {
             scene.getStylesheets().add(cssBase.toExternalForm());
-            System.out.println("✅ CSS Base carregado");
+            System.out.println(" CSS Base carregado");
         }
 
         // CSS específico da tela inicial (se for a tela inicial)
@@ -68,9 +67,9 @@ public class Main extends Application {
             URL cssTelaInicial = Main.class.getResource("/br/edu/ufersa/aplicativo/css/TelaInicialStyle.css");
             if (cssTelaInicial != null) {
                 scene.getStylesheets().add(cssTelaInicial.toExternalForm());
-                System.out.println("✅ CSS Tela Inicial carregado");
+                System.out.println(" CSS Tela Inicial carregado");
             } else {
-                System.out.println("❌ CSS Tela Inicial NÃO ENCONTRADO!");
+                System.out.println(" CSS Tela Inicial NÃO ENCONTRADO!");
             }
         }
         // CSS específico da tela questoes (se for a tela questoes)
@@ -78,9 +77,9 @@ public class Main extends Application {
             URL cssQuestoes = Main.class.getResource("/br/edu/ufersa/aplicativo/css/QuestoesStyle.css");
             if (cssQuestoes != null) {
                 scene.getStylesheets().add(cssQuestoes.toExternalForm());
-                System.out.println("✅ CSS Questes carregado");
+                System.out.println(" CSS Questes carregado");
             } else {
-                System.out.println("❌ CSS Questoes NÃO ENCONTRADO!");
+                System.out.println(" CSS Questoes NÃO ENCONTRADO!");
             }
         }
         // CSS específico da tela adicionar disciplina (se for a tela adicionar disciplina)
@@ -88,9 +87,9 @@ public class Main extends Application {
             URL cssAdicionarDisc = Main.class.getResource("/br/edu/ufersa/aplicativo/css/TelaAdiconarDiscStyle.css");
             if (cssAdicionarDisc != null) {
                 scene.getStylesheets().add(cssAdicionarDisc.toExternalForm());
-                System.out.println("✅ CSS adicionar disciplina carregado");
+                System.out.println(" CSS adicionar disciplina carregado");
             } else {
-                System.out.println("❌ CSS adicionar disciplina NÃO ENCONTRADO!");
+                System.out.println(" CSS adicionar disciplina NÃO ENCONTRADO!");
             }
         }
 

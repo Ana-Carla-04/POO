@@ -12,7 +12,6 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -158,13 +157,13 @@ public class TelaInicialController implements Initializable {
         );
 
         // Botão: Adicionar Disciplina
-        HBox btnDisciplina = criarOpcao("📚 Adicionar Disciplina", () -> {
+        HBox btnDisciplina = criarOpcao(" Adicionar Disciplina", () -> {
             popupStage.close();
             abrirTelaAdicionarDisciplina();
         });
 
         // Botão: Adicionar Questão
-        HBox btnQuestao = criarOpcao("📝 Adicionar Questão", () -> {
+        HBox btnQuestao = criarOpcao(" Adicionar Questão", () -> {
             popupStage.close();
             abrirTelaAdicionarQuestao();
         });
@@ -273,7 +272,7 @@ public class TelaInicialController implements Initializable {
 
     private void abrirTelaAdicionarDisciplina() {
         try {
-            System.out.println("📚 Abrindo tela para adicionar disciplina...");
+            System.out.println("Abrindo tela para adicionar disciplina...");
 
             // Carregar a tela de adicionar disciplina
             FXMLLoader loader = new FXMLLoader(
@@ -310,14 +309,14 @@ public class TelaInicialController implements Initializable {
 
         } catch (Exception e) {
             e.printStackTrace();
-            System.err.println("❌ Erro ao abrir tela de adicionar disciplina: " + e.getMessage());
+            System.err.println(" Erro ao abrir tela de adicionar disciplina: " + e.getMessage());
             showAlert("Erro", "Não foi possível abrir a tela de adicionar disciplina!");
         }
     }
 
     private void abrirTelaAdicionarQuestao() {
         try {
-            System.out.println("📝 Abrindo tela para adicionar questão...");
+            System.out.println(" Abrindo tela para adicionar questão...");
 
             // Carregar a tela de adicionar questão
             FXMLLoader loader = new FXMLLoader(
@@ -354,7 +353,7 @@ public class TelaInicialController implements Initializable {
 
         } catch (Exception e) {
             e.printStackTrace();
-            System.err.println("❌ Erro ao abrir tela de adicionar questão: " + e.getMessage());
+            System.err.println(" Erro ao abrir tela de adicionar questão: " + e.getMessage());
             showAlert("Erro", "Não foi possível abrir a tela de adicionar questão!");
         }
     }
