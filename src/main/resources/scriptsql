@@ -52,6 +52,9 @@ CREATE TABLE prova (
     instituicao VARCHAR(150) NOT NULL,
     data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     disciplina_id INT NOT NULL,
+    professor VARCHAR(255),
+
+
 
     FOREIGN KEY (disciplina_id) REFERENCES disciplina(id) ON DELETE CASCADE
 );

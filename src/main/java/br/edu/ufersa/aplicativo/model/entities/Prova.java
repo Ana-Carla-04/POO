@@ -6,15 +6,17 @@ import java.util.List;
 public class Prova {
     private String codigo;
     private String instituicao;
+    private String professor;  // Adicionar campo professor
     private LocalDate dataDeCriacao;
     private List<Questao> questoes;
     private Disciplina disciplina;
 
-    public Prova(List<Questao> questoes, Disciplina disciplina,String codigo) {
+    public Prova(List<Questao> questoes, Disciplina disciplina, String codigo, String professor) {
         setDataDeCriacao(LocalDate.now());
         setQuestoes(questoes);
         setDisciplina(disciplina);
         setCodigo(codigo);
+        setProfessor(professor);
     }
 
     public void setCodigo(String codigo){
@@ -26,6 +28,12 @@ public class Prova {
     public void setInstituicao(String instituicao){
         if(instituicao != null && !instituicao.trim().isEmpty()){
             this.instituicao = instituicao;
+        }
+    }
+
+    public void setProfessor(String professor){
+        if(professor != null && !professor.trim().isEmpty()){
+            this.professor = professor;
         }
     }
 
@@ -55,6 +63,10 @@ public class Prova {
         return instituicao;
     }
 
+    public String getProfessor(){
+        return professor;
+    }
+
     public LocalDate getDataDeCriacao() {
         return dataDeCriacao;
     }
@@ -67,4 +79,7 @@ public class Prova {
         return disciplina;
     }
 
+    public String getNomeDisciplina() {
+        return disciplina != null ? disciplina.getNome() : "";
+    }
 }

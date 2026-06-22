@@ -13,7 +13,6 @@ import java.util.List;
 
 public class MainTesta {
     public static void main(String[] args) {
-    // Main para testar criação das classes Professor, Disciplina, Questão e Prova implementados no bd
         try (Connection conexao = Conexao.abrirConexao()) {
 
             System.out.println("\nLimpando a database");
@@ -64,28 +63,27 @@ public class MainTesta {
             List<Questao> listaBaseQuestoes = new ArrayList<>();
             listaBaseQuestoes.add(q1); listaBaseQuestoes.add(q2); listaBaseQuestoes.add(q3); listaBaseQuestoes.add(q4); listaBaseQuestoes.add(q5);
 
-
             System.out.println("\nCriando a PROVA A");
             List<Questao> questoesProvaA = new ArrayList<>(listaBaseQuestoes);
             Collections.shuffle(questoesProvaA);
 
-            Prova provaA = new Prova(questoesProvaA, disciplinaTeste, "PROVA-VERSAO-A");
+            // CORREÇÃO: Adicionar o professor como 4º parâmetro
+            Prova provaA = new Prova(questoesProvaA, disciplinaTeste, "PROVA-VERSAO-A", "Gadelha");
             provaA.setInstituicao("UFERSA");
             provaDAO.inserir(provaA);
-
 
             System.out.println("\nCriando a PROVA B");
             List<Questao> questoesProvaB = new ArrayList<>(listaBaseQuestoes);
 
             // Força a ordem a ser obrigatoriamente diferente da Prova A
             while (questoesProvaB.equals(questoesProvaA)) {
-                Collections.shuffle(questoesProvaB); // 🔥 Embaralha para a Prova B
+                Collections.shuffle(questoesProvaB);
             }
 
-            Prova provaB = new Prova(questoesProvaB, disciplinaTeste, "PROVA-VERSAO-B");
+            // CORREÇÃO: Adicionar o professor como 4º parâmetro
+            Prova provaB = new Prova(questoesProvaB, disciplinaTeste, "PROVA-VERSAO-B", "Gadelha");
             provaB.setInstituicao("UFERSA");
             provaDAO.inserir(provaB);
-
 
             System.out.println("\nExibindo provas");
 

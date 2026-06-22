@@ -71,7 +71,8 @@ public final class ProvaSessao {
         Disciplina disciplina = lista.isEmpty() ? null : lista.get(0).getDisciplina();
         String codigo = "PROVA-" + System.currentTimeMillis();
 
-        Prova prova = new Prova(lista, disciplina, codigo);
+        // Passar o professor como parâmetro
+        Prova prova = new Prova(lista, disciplina, codigo, this.professor);
         prova.setInstituicao(instituicao);
         prova.setDataDeCriacao(LocalDate.now());
 
@@ -134,5 +135,11 @@ public final class ProvaSessao {
         }
         bancoCache = banco;
         return banco;
+    }
+
+    public void removerProvaSalva(Prova prova) {
+        if (prova != null) {
+            provasSalvas.remove(prova);
+        }
     }
 }

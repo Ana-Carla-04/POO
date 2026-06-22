@@ -64,7 +64,7 @@
                     <Label styleClass="menu-label" text="Gerar Prova"/>
                 </HBox>
             </StackPane>
-            <StackPane fx:id="menuRelatorio" styleClass="menu-item, menu-item-selected" onMouseClicked="#handleMenuRelatorio">
+            <StackPane fx:id="menuRelatorio" styleClass="menu-item" onMouseClicked="#handleMenuRelatorio">
                 <HBox alignment="CENTER_LEFT" spacing="12">
                     <padding><Insets left="18"/></padding>
                     <Label styleClass="menu-icon" text="&#128202;"/>

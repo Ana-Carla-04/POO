@@ -232,6 +232,28 @@
     -fx-padding: 4 12 4 12;
 }
 
+
+
+
+
+.card-data-label {
+    -fx-text-fill: #3a6f8f;
+    -fx-font-size: 12px;
+}
+
+/* Professor - mesma cor da data */
+.card-professor-label {
+    -fx-text-fill: #3a6f8f;  /* MESMA COR DA DATA */
+    -fx-font-size: 13px;
+    -fx-padding: 0 12 4 12;
+}
+
+/* Quantidade de questões - mesma cor da data */
+.card-questoes-label {
+    -fx-text-fill: #3a6f8f;  /* MESMA COR DA DATA */
+    -fx-font-size: 12px;
+}
+
 /* Linha divisória */
 .card-divider {
     -fx-background-color: rgba(10, 65, 116, 0.20);
@@ -244,10 +266,6 @@
     -fx-padding: 8 12 10 12;
 }
 
-.card-data-label {
-    -fx-text-fill: #3a6f8f;
-    -fx-font-size: 12px;
-}
 
 /* ── EMPTY STATE ────────────────────────────────────────────── */
 .empty-state-label {

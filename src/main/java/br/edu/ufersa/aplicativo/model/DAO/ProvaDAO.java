@@ -29,13 +29,15 @@ public class ProvaDAO implements DAO<Prova> {
             throw new IllegalArgumentException("Prova não pode ser em branco");
         }
 
-        String sqlProva = "INSERT INTO prova (codigo, instituicao, data_criacao, disciplina_id) VALUES (?, ?, ?, ?)";
+        // CORREÇÃO: Adicionar professor na query
+        String sqlProva = "INSERT INTO prova (codigo, instituicao, professor, data_criacao, disciplina_id) VALUES (?, ?, ?, ?, ?)";
 
         try (PreparedStatement ps = conexao.prepareStatement(sqlProva, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, prova.getCodigo());
             ps.setString(2, prova.getInstituicao());
-            ps.setDate(3, Date.valueOf(prova.getDataDeCriacao()));
-            ps.setInt(4, prova.getDisciplina().getId());
+            ps.setString(3, prova.getProfessor()); // Adicionar professor
+            ps.setDate(4, Date.valueOf(prova.getDataDeCriacao()));
+            ps.setInt(5, prova.getDisciplina().getId());
 
             ps.executeUpdate();
 
@@ -67,13 +69,15 @@ public class ProvaDAO implements DAO<Prova> {
             throw new IllegalArgumentException("Prova não pode ser em branco");
         }
 
-        String sql = "UPDATE prova SET instituicao = ?, data_criacao = ?, disciplina_id = ? WHERE codigo = ?";
+        // CORREÇÃO: Adicionar professor no UPDATE
+        String sql = "UPDATE prova SET instituicao = ?, professor = ?, data_criacao = ?, disciplina_id = ? WHERE codigo = ?";
 
         try (PreparedStatement ps = conexao.prepareStatement(sql)) {
             ps.setString(1, prova.getInstituicao());
-            ps.setDate(2, Date.valueOf(prova.getDataDeCriacao()));
-            ps.setInt(3, prova.getDisciplina().getId());
-            ps.setString(4, prova.getCodigo());
+            ps.setString(2, prova.getProfessor()); // Adicionar professor
+            ps.setDate(3, Date.valueOf(prova.getDataDeCriacao()));
+            ps.setInt(4, prova.getDisciplina().getId());
+            ps.setString(5, prova.getCodigo());
 
             int linhasAfetadas = ps.executeUpdate();
             if (linhasAfetadas == 0) {
@@ -114,12 +118,19 @@ public class ProvaDAO implements DAO<Prova> {
 
             while (rs.next()) {
                 String disciplinaCodigo = rs.getString("disciplina_codigo");
+                String professor = rs.getString("professor"); // Buscar professor do banco
 
                 Disciplina disc = disciplinaDAO.buscarPorCodigo(disciplinaCodigo);
-
                 List<Questao> questoesDaProva = new ArrayList<>();
 
-                Prova prova = new Prova(questoesDaProva, disc, rs.getString("codigo"));
+                // CORREÇÃO: Passar professor como 4º parâmetro
+                Prova prova = new Prova(
+                        questoesDaProva,
+                        disc,
+                        rs.getString("codigo"),
+                        professor != null ? professor : "" // Se for null, usar string vazia
+                );
+
                 prova.setInstituicao(rs.getString("instituicao"));
 
                 if (rs.getDate("data_criacao") != null) {
