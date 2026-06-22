@@ -6,6 +6,7 @@ import java.util.Optional;
 import br.edu.ufersa.aplicativo.model.entities.Professor;
 import br.edu.ufersa.aplicativo.model.DAO.ProfessorDAO;
 import br.edu.ufersa.aplicativo.model.dto.TentarLoginDTO;
+import br.edu.ufersa.aplicativo.model.dto.CadastroDTO;
 
 public class AutenticacaoService {
     private final ProfessorDAO professorDAO;
@@ -22,6 +23,17 @@ public class AutenticacaoService {
             if (professor.isEmpty()) return Optional.empty();
             if (professor.get().getSenha().equals(dto.getSenha())) return professor;
             return Optional.empty();
+        } catch (SQLException e) {
+            throw new ServiceException(e.getMessage(), e);
+        }
+    }
+
+    public Professor tentarCadastro(CadastroDTO dto) {
+        if (dto == null) throw new IllegalArgumentException("DTO invalido");
+        Professor novoProfessor = new Professor(dto.getNome(), dto.getEmail(), dto.getSenha());
+        try {
+            professorDAO.inserir(novoProfessor);
+            return novoProfessor;
         } catch (SQLException e) {
             throw new ServiceException(e.getMessage(), e);
         }

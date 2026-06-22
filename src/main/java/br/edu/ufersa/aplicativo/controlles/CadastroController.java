@@ -1,7 +1,5 @@
 package br.edu.ufersa.aplicativo.controlles;
 
-import br.edu.ufersa.aplicativo.application.GerenteDeCena;
-import br.edu.ufersa.aplicativo.application.Main;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -11,7 +9,19 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
+import br.edu.ufersa.aplicativo.application.GerenteDeCena;
+import br.edu.ufersa.aplicativo.model.entities.Professor;
+import br.edu.ufersa.aplicativo.model.dto.CadastroDTO;
+import br.edu.ufersa.aplicativo.model.service.AutenticacaoService;
+import br.edu.ufersa.aplicativo.model.service.ServiceException;
+import br.edu.ufersa.aplicativo.model.service.ServiceFactory;
+
 public class CadastroController {
+    private final AutenticacaoService autenticacaoService;
+
+    public CadastroController() {
+        autenticacaoService = ServiceFactory.criarAutenticacaoService();
+    }
 
     @FXML private TextField     nomeField;
     @FXML private TextField     emailField;
@@ -48,8 +58,16 @@ public class CadastroController {
             return;
         }
 
-        showAlert(AlertType.INFORMATION, "Cadastro realizado!", "Sucesso",
-                "Conta criada com sucesso! Faça login para continuar.");
+        try {
+            CadastroDTO dto = new CadastroDTO(nome, email, senha);
+            Professor professorCadastrado = autenticacaoService.tentarCadastro(dto);
+            showAlert(AlertType.INFORMATION, "Cadastro realizado!", "Sucesso",
+                    "Conta criada com sucesso! Faça login para continuar.");
+        } catch (ServiceException e) {
+            showAlert(AlertType.INFORMATION, "Falha no cadastro!", "Falha",
+                    "Erro ao tentar cadastro: " + e.getMessage());
+            e.printStackTrace();
+        }
 
         irParaLogin(event);
     }
