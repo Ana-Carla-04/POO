@@ -11,6 +11,7 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
+import br.edu.ufersa.aplicativo.application.Contexto;
 import br.edu.ufersa.aplicativo.model.entities.Professor;
 import br.edu.ufersa.aplicativo.model.dto.TentarLoginDTO;
 import br.edu.ufersa.aplicativo.model.service.AutenticacaoService;
@@ -48,7 +49,8 @@ public class LoginController {
         if (professorLogado.isEmpty()) {
             showAlert(AlertType.ERROR, "Falha no login", "Erro", "Email ou senha incorreto.");
         } else {
-            System.out.println("LOGADO COM SUCESSO");
+            Contexto.setProfessorLogado(professorLogado.get());
+            GerenteDeCena.carregarCena("/br/edu/ufersa/aplicativo/views/TelaInicialView.fxml", "/br/edu/ufersa/aplicativo/css/TelaInicialStyle.css", "Gerador de Provas - Tela inicial");
         }
     }
 

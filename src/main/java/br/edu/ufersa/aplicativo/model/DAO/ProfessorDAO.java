@@ -20,7 +20,7 @@ public class ProfessorDAO implements DAO<Professor> { //usou a interface para de
     private static final String sql_alterar = "UPDATE professor SET nome = ?, email = ?, senha = ? WHERE id = ?;"; //altera o email e a senha baseado no nome
     private static final String sql_deletar = "DELETE FROM professor WHERE id = ?;"; //deleta baseado no nome
     private static final String sql_listar = "SELECT id, nome, email, senha FROM professor;"; //list a todos os professores
-    private static final String sql_buscar_por_email = "SELECT nome, email, senha FROM professor WHERE email = ?;";
+    private static final String sql_buscar_por_email = "SELECT id, nome, email, senha FROM professor WHERE email = ?;";
 
     private final Connection conexao; //armazena a conexao com o banco de dados, como um atributo
 
