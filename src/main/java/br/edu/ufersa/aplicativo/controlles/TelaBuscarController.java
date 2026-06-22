@@ -59,7 +59,7 @@ public class TelaBuscarController implements Initializable {
     @FXML private StackPane menuBuscar;
     @FXML private StackPane menuGerarProva;
     @FXML private StackPane menuRelatorio;
-    @FXML private StackPane menuProvas;
+
 
     // ── Estado ──────────────────────────────────────────────────────
     private enum ModoBusca { NENHUM, PROVA, QUESTOES }
@@ -589,8 +589,8 @@ public class TelaBuscarController implements Initializable {
     @FXML private void handleMenuDisciplinas(MouseEvent e)  { navegarPara("TelaInicialView"); }
     @FXML private void handleMenuBuscar(MouseEvent e)       { /* já estou aqui */ }
     @FXML private void handleMenuGerarProva(MouseEvent e)   { navegarPara("TelaGerarProvaView"); }
-    @FXML private void handleMenuRelatorio(MouseEvent e)    { alerta("Relatório",   "Em breve!"); }
-    @FXML private void handleMenuProvas(MouseEvent e)       { alerta("Provas",      "Em breve!"); }
+    @FXML private void handleMenuRelatorio(MouseEvent e)    { navegarPara("TelaRelatorioView"); }
+
 
     private void navegarPara(String nomeView) {
         try {

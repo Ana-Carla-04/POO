@@ -37,7 +37,7 @@ public class TelaGerarAutoController implements Initializable {
     @FXML private StackPane menuBuscar;
     @FXML private StackPane menuGerarProva;
     @FXML private StackPane menuRelatorio;
-    @FXML private StackPane menuProvas;
+
 
     // Constantes para controle de páginas
     private static final double ALTURA_MAXIMA_PAGINA = 680; // Altura máxima em pixels
@@ -429,13 +429,10 @@ public class TelaGerarAutoController implements Initializable {
 
     @FXML
     private void handleMenuRelatorio(MouseEvent e) {
-        alerta("Relatório", "Em breve!");
+        navegarPara("TelaRelatorioView", "TelaRelatorioStyle", menuRelatorio);
     }
 
-    @FXML
-    private void handleMenuProvas(MouseEvent e) {
-        alerta("Provas", "Em breve!");
-    }
+
 
     private void navegarPara(String nomeView, String nomeCSS, javafx.scene.Node origem) {
         try {

@@ -25,7 +25,7 @@ public class TelaGerarProvaController implements Initializable {
     @FXML private StackPane menuBuscar;
     @FXML private StackPane menuGerarProva;
     @FXML private StackPane menuRelatorio;
-    @FXML private StackPane menuProvas;
+
 
     @FXML private StackPane cardGerarAleatorio;
     @FXML private StackPane cardGerarManual;
@@ -51,7 +51,7 @@ public class TelaGerarProvaController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         menuItems = Arrays.asList(
-                menuDisciplinas, menuBuscar, menuGerarProva, menuRelatorio, menuProvas
+                menuDisciplinas, menuBuscar, menuGerarProva, menuRelatorio
         );
         selecionarMenu(menuGerarProva);
 
@@ -117,15 +117,15 @@ public class TelaGerarProvaController implements Initializable {
 
     @FXML
     private void handleMenuRelatorio(MouseEvent event) {
-        selecionarMenu(menuRelatorio);
-        topbarTitle.setText("Relatório");
+        navegarPara(
+                "/br/edu/ufersa/aplicativo/views/TelaRelatorioView.fxml",
+                "/br/edu/ufersa/aplicativo/css/TelaRelatorioStyle.css",
+                "Gerador de Provas - Relatorio",
+                menuRelatorio
+        );
     }
 
-    @FXML
-    private void handleMenuProvas(MouseEvent event) {
-        selecionarMenu(menuProvas);
-        topbarTitle.setText("Provas");
-    }
+
 
     private void navegarPara(String fxmlPath, String cssPath, String tituloJanela, StackPane origem) {
         try {
@@ -151,7 +151,7 @@ public class TelaGerarProvaController implements Initializable {
 
         } catch (Exception e) {
             e.printStackTrace();
-            System.err.println("❌ Erro ao navegar para " + fxmlPath + ": " + e.getMessage());
+            System.err.println(" Erro ao navegar para " + fxmlPath + ": " + e.getMessage());
         }
     }
 
@@ -223,7 +223,7 @@ public class TelaGerarProvaController implements Initializable {
 
         } catch (Exception e) {
             e.printStackTrace();
-            System.err.println("❌ Erro ao navegar para TelaGerarProvaManualView: " + e.getMessage());
+            System.err.println(" Erro ao navegar para TelaGerarProvaManualView: " + e.getMessage());
             showAlert("Erro", "Não foi possível abrir a tela de geração manual.");
         }
     }
@@ -251,7 +251,7 @@ public class TelaGerarProvaController implements Initializable {
 
         } catch (Exception e) {
             e.printStackTrace();
-            System.err.println("❌ Erro ao navegar para TelaGerarAutoView: " + e.getMessage());
+            System.err.println("Erro ao navegar para TelaGerarAutoView: " + e.getMessage());
             showAlert("Erro", "Não foi possível abrir a tela de prova gerada.");
         }
     }

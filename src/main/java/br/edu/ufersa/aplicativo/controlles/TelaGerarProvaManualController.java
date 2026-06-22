@@ -62,7 +62,7 @@ public class TelaGerarProvaManualController implements Initializable {
     @FXML private StackPane menuBuscar;
     @FXML private StackPane menuGerarProva;
     @FXML private StackPane menuRelatorio;
-    @FXML private StackPane menuProvas;
+
 
     // ── Estado ──────────────────────────────────────────────────────
 
@@ -478,13 +478,10 @@ public class TelaGerarProvaManualController implements Initializable {
 
     @FXML
     private void handleMenuRelatorio(MouseEvent e) {
-        alerta("Relatório", "Em breve!");
+        navegarPara("TelaGerarRelatorioView", "TelaRelatorioStyle");
     }
 
-    @FXML
-    private void handleMenuProvas(MouseEvent e) {
-        alerta("Provas", "Em breve!");
-    }
+
 
     private void navegarPara(String nomeView, String nomeCSS) {
         try {

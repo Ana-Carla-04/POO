@@ -1,5 +1,6 @@
 package br.edu.ufersa.aplicativo.controlles;
 
+import br.edu.ufersa.aplicativo.application.Contexto;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -19,6 +20,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import br.edu.ufersa.aplicativo.application.GerenteDeCena;
+
 public class TelaInicialController implements Initializable {
 
     @FXML private Label topbarTitle;
@@ -27,17 +30,17 @@ public class TelaInicialController implements Initializable {
     @FXML private StackPane menuBuscar;
     @FXML private StackPane menuGerarProva;
     @FXML private StackPane menuRelatorio;
-    @FXML private StackPane menuProvas;
     @FXML private Button fabButton;
 
     private List<StackPane> menuItems;
     private List<DisciplinaInfo> disciplinasInfo;
     private Stage popupStage;
 
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         menuItems = Arrays.asList(
-                menuDisciplinas, menuBuscar, menuGerarProva, menuRelatorio, menuProvas
+                menuDisciplinas, menuBuscar, menuGerarProva, menuRelatorio
         );
 
         inicializarDisciplinas();
@@ -81,6 +84,8 @@ public class TelaInicialController implements Initializable {
         }
     }
 
+
+
     @FXML
     private void handleMenuDisciplinas(MouseEvent event) {
         selecionarMenu(menuDisciplinas);
@@ -96,38 +101,13 @@ public class TelaInicialController implements Initializable {
         try {
             System.out.println("🔍 Abrindo tela de buscar...");
 
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/br/edu/ufersa/aplicativo/views/TelaBuscarView.fxml")
-            );
-            Parent root = loader.load();
+            GerenteDeCena.carregarCena("/br/edu/ufersa/aplicativo/views/TelaBuscarView.fxml", "/br/edu/ufersa/aplicativo/css/TelaBuscarStyle.css", "Gerador de Provas - Buscar");
 
-            Scene scene = new Scene(root, 1280, 750);
-
-            // Carregar CSS específico
-            URL cssUrl = getClass().getResource("/br/edu/ufersa/aplicativo/css/TelaBuscarStyle.css");
-            if (cssUrl != null) {
-                scene.getStylesheets().add(cssUrl.toExternalForm());
-            }
-
-            Stage stage = (Stage) menuBuscar.getScene().getWindow();
-            boolean isFullScreen = stage.isFullScreen();
-            boolean isMaximized = stage.isMaximized();
-
-            stage.setScene(scene);
-            stage.setTitle("Gerador de Provas - Buscar");
-
-            if (isFullScreen) {
-                stage.setFullScreen(true);
-            }
-            if (isMaximized) {
-                stage.setMaximized(true);
-            }
-
-            System.out.println("✅ Tela de buscar aberta com sucesso!");
+            System.out.println(" Tela de buscar aberta com sucesso!");
 
         } catch (Exception e) {
             e.printStackTrace();
-            System.err.println("❌ Erro ao abrir tela de buscar: " + e.getMessage());
+            System.err.println(" Erro ao abrir tela de buscar: " + e.getMessage());
         }
     }
 
@@ -135,53 +115,48 @@ public class TelaInicialController implements Initializable {
     private void handleMenuGerarProva(MouseEvent event) {
         try {
             System.out.println(" Abrindo tela de gerar prova...");
+            GerenteDeCena.carregarCena("/br/edu/ufersa/aplicativo/views/TelaGerarProvaView.fxml", "/br/edu/ufersa/aplicativo/css/TelaGerarProvaStyle.css", "Gerador de Provas - Gerar Prova");
 
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/br/edu/ufersa/aplicativo/views/TelaGerarProvaView.fxml")
-            );
-            Parent root = loader.load();
-
-            Scene scene = new Scene(root, 1280, 750);
-
-            // Carregar CSS específico
-            URL cssUrl = getClass().getResource("/br/edu/ufersa/aplicativo/css/TelaGerarProvaStyle.css");
-            if (cssUrl != null) {
-                scene.getStylesheets().add(cssUrl.toExternalForm());
-            }
-
-            Stage stage = (Stage) menuGerarProva.getScene().getWindow();
-            boolean isFullScreen = stage.isFullScreen();
-            boolean isMaximized = stage.isMaximized();
-
-            stage.setScene(scene);
-            stage.setTitle("Gerador de Provas - Gerar Prova");
-
-            if (isFullScreen) {
-                stage.setFullScreen(true);
-            }
-            if (isMaximized) {
-                stage.setMaximized(true);
-            }
-
-            System.out.println(" Tela de gerar prova aberta com sucesso!");
-
+            System.out.println("Tela de gerar prova aberta com sucesso!");
         } catch (Exception e) {
             e.printStackTrace();
             System.err.println(" Erro ao abrir tela de gerar prova: " + e.getMessage());
         }
     }
 
+    // ═══════════════════════════════════════════════════════════════════
+    // NAVEGAÇÃO PARA TELA DE RELATÓRIO
+    // ═══════════════════════════════════════════════════════════════════
     @FXML
     private void handleMenuRelatorio(MouseEvent event) {
-        selecionarMenu(menuRelatorio);
-        topbarTitle.setText("Relatório");
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/br/edu/ufersa/aplicativo/views/TelaRelatorioView.fxml")
+            );
+            Parent root = loader.load();
+            Scene scene = new Scene(root, 1280, 750);
+
+            URL cssUrl = getClass().getResource("/br/edu/ufersa/aplicativo/css/TelaRelatorioStyle.css");
+            if (cssUrl != null) scene.getStylesheets().add(cssUrl.toExternalForm());
+
+            Stage stage = (Stage) menuRelatorio.getScene().getWindow();
+            boolean isFullScreen = stage.isFullScreen();
+            boolean isMaximized = stage.isMaximized();
+
+            stage.setScene(scene);
+            stage.setTitle("Gerador de Provas - Relatório");
+
+            if (isFullScreen) stage.setFullScreen(true);
+            if (isMaximized) stage.setMaximized(true);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Erro ao abrir tela de relatório: " + e.getMessage());
+        }
     }
 
-    @FXML
-    private void handleMenuProvas(MouseEvent event) {
-        selecionarMenu(menuProvas);
-        topbarTitle.setText("Provas");
-    }
+
+
 
     // ═══════════════════════════════════════════════════════════════════
     // FAB - ABRE POPUP COM OPÇÕES
@@ -320,73 +295,25 @@ public class TelaInicialController implements Initializable {
 
     private void abrirTelaAdicionarDisciplina() {
         try {
-            System.out.println("📚 Abrindo tela para adicionar disciplina...");
+            System.out.println(" Abrindo tela para adicionar disciplina...");
 
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/br/edu/ufersa/aplicativo/views/TelaAdicionarDiscView.fxml")
-            );
-            Parent root = loader.load();
-
-            Scene scene = new Scene(root, 1280, 750);
-
-            URL cssUrl = getClass().getResource("/br/edu/ufersa/aplicativo/css/TelaAdicionarDiscStyle.css");
-            if (cssUrl != null) {
-                scene.getStylesheets().add(cssUrl.toExternalForm());
-            }
-
-            Stage stage = (Stage) fabButton.getScene().getWindow();
-            boolean isFullScreen = stage.isFullScreen();
-            boolean isMaximized = stage.isMaximized();
-
-            stage.setScene(scene);
-            stage.setTitle("Gerador de Provas - Adicionar Disciplina");
-
-            if (isFullScreen) {
-                stage.setFullScreen(true);
-            }
-            if (isMaximized) {
-                stage.setMaximized(true);
-            }
+            GerenteDeCena.carregarCena("/br/edu/ufersa/aplicativo/views/TelaAdicionarDiscView.fxml", "/br/edu/ufersa/aplicativo/css/TelaAdicionarDiscStyle.css", "Gerador de Provas - Adicionar Disciplina");
 
         } catch (Exception e) {
             e.printStackTrace();
-            System.err.println("❌ Erro ao abrir tela de adicionar disciplina: " + e.getMessage());
+            System.err.println(" Erro ao abrir tela de adicionar disciplina: " + e.getMessage());
         }
     }
 
     private void abrirTelaAdicionarQuestao() {
         try {
-            System.out.println("📝 Abrindo tela para adicionar questão...");
+            System.out.println(" Abrindo tela para adicionar questão...");
 
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/br/edu/ufersa/aplicativo/views/TelaAdicionarQuestView.fxml")
-            );
-            Parent root = loader.load();
-
-            Scene scene = new Scene(root, 1280, 750);
-
-            URL cssUrl = getClass().getResource("/br/edu/ufersa/aplicativo/css/TelaAdicionarQuestStyle.css");
-            if (cssUrl != null) {
-                scene.getStylesheets().add(cssUrl.toExternalForm());
-            }
-
-            Stage stage = (Stage) fabButton.getScene().getWindow();
-            boolean isFullScreen = stage.isFullScreen();
-            boolean isMaximized = stage.isMaximized();
-
-            stage.setScene(scene);
-            stage.setTitle("Gerador de Provas - Adicionar Questão");
-
-            if (isFullScreen) {
-                stage.setFullScreen(true);
-            }
-            if (isMaximized) {
-                stage.setMaximized(true);
-            }
+            GerenteDeCena.carregarCena("/br/edu/ufersa/aplicativo/views/TelaAdicionarQuestView.fxml", "/br/edu/ufersa/aplicativo/css/TelaAdicionarQuestStyle.css", "Gerador de Provas - Adicionar Questão");
 
         } catch (Exception e) {
             e.printStackTrace();
-            System.err.println("❌ Erro ao abrir tela de adicionar questão: " + e.getMessage());
+            System.err.println(" Erro ao abrir tela de adicionar questão: " + e.getMessage());
         }
     }
 
@@ -453,34 +380,8 @@ public class TelaInicialController implements Initializable {
         try {
             System.out.println("Disciplina selecionada: " + info.getNome());
 
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/br/edu/ufersa/aplicativo/views/QuestoesView.fxml")
-            );
-            Parent root = loader.load();
-
-            QuestoesController controller = loader.getController();
-            controller.setDisciplinaInfo(info);
-
-            Scene scene = new Scene(root, 1280, 750);
-
-            URL cssUrl = getClass().getResource("/br/edu/ufersa/aplicativo/css/TelaInicialStyle.css");
-            if (cssUrl != null) {
-                scene.getStylesheets().add(cssUrl.toExternalForm());
-            }
-
-            Stage stage = (Stage) disciplinasGrid.getScene().getWindow();
-            boolean isFullScreen = stage.isFullScreen();
-            boolean isMaximized = stage.isMaximized();
-
-            stage.setScene(scene);
-            stage.setTitle("Gerador de Provas - " + info.getNome());
-
-            if (isFullScreen) {
-                stage.setFullScreen(true);
-            }
-            if (isMaximized) {
-                stage.setMaximized(true);
-            }
+            Contexto.setDisciplinaSelecionada(info);
+            GerenteDeCena.carregarCena("/br/edu/ufersa/aplicativo/views/QuestoesView.fxml", "/br/edu/ufersa/aplicativo/css/TelaInicialStyle.css", "Gerador de Provas - " + info.getNome());
 
         } catch (Exception e) {
             e.printStackTrace();

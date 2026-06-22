@@ -31,7 +31,7 @@ public class TelaAdicionarDiscController implements Initializable {
     @FXML private StackPane menuBuscar;
     @FXML private StackPane menuGerarProva;
     @FXML private StackPane menuRelatorio;
-    @FXML private StackPane menuProvas;
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -41,7 +41,6 @@ public class TelaAdicionarDiscController implements Initializable {
     /* ── VOLTAR (SETA) ───────────────────────────────────────── */
     @FXML
     private void handleVoltar(MouseEvent event) {
-        System.out.println("🔙 Voltar para tela inicial...");
         voltarParaTelaInicial();
     }
 
@@ -60,20 +59,15 @@ public class TelaAdicionarDiscController implements Initializable {
     /* ── Menu: Gerar Prova ───────────────────────────────────── */
     @FXML
     private void handleMenuGerarProva(MouseEvent event) {
-        showAlert("Gerar Prova", "Tela de geração de prova em breve!");
+        abrirTelaGerarProva();
     }
 
     /* ── Menu: Relatório ─────────────────────────────────────── */
     @FXML
     private void handleMenuRelatorio(MouseEvent event) {
-        showAlert("Relatório", "Tela de relatórios em breve!");
+        abrirRelatorio() ;
     }
 
-    /* ── Menu: Provas ────────────────────────────────────────── */
-    @FXML
-    private void handleMenuProvas(MouseEvent event) {
-        showAlert("Provas", "Tela de provas em breve!");
-    }
 
     /* ── Adicionar Disciplina ────────────────────────────────── */
     @FXML
@@ -98,6 +92,75 @@ public class TelaAdicionarDiscController implements Initializable {
         voltarParaTelaInicial();
     }
 
+
+    // NAVEGAÇÃO PARA TELA DE RELATÓRIO
+
+    private void abrirRelatorio() {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/br/edu/ufersa/aplicativo/views/TelaRelatorioView.fxml")
+            );
+            Parent root = loader.load();
+            Scene scene = new Scene(root, 1280, 750);
+
+            URL cssUrl = getClass().getResource("/br/edu/ufersa/aplicativo/css/TelaRelatorioStyle.css");
+            if (cssUrl != null) scene.getStylesheets().add(cssUrl.toExternalForm());
+
+            Stage stage = (Stage) menuRelatorio.getScene().getWindow();
+            boolean isFullScreen = stage.isFullScreen();
+            boolean isMaximized = stage.isMaximized();
+
+            stage.setScene(scene);
+            stage.setTitle("Gerador de Provas - Relatório");
+
+            if (isFullScreen) stage.setFullScreen(true);
+            if (isMaximized) stage.setMaximized(true);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Erro ao abrir tela de relatório: " + e.getMessage());
+        }
+    }
+
+    /* ── Abrir Tela Gerar Prova ────────────────────────────────────── */
+    private void abrirTelaGerarProva(){
+        try{
+            System.out.println(" Abrindo tela de gerar prova...");
+
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/br/edu/ufersa/aplicativo/views/TelaGerarProvaView.fxml")
+            );
+            Parent root = loader.load();
+
+            Scene scene = new Scene(root, 1280, 750);
+
+            // Carregar CSS específico
+            URL cssUrl = getClass().getResource("/br/edu/ufersa/aplicativo/css/TelaGerarProvaStyle.css");
+            if (cssUrl != null) {
+                scene.getStylesheets().add(cssUrl.toExternalForm());
+            }
+
+            Stage stage = (Stage) menuGerarProva.getScene().getWindow();
+            boolean isFullScreen = stage.isFullScreen();
+            boolean isMaximized = stage.isMaximized();
+
+            stage.setScene(scene);
+            stage.setTitle("Gerador de Provas - Gerar Prova");
+
+            if (isFullScreen) {
+                stage.setFullScreen(true);
+            }
+            if (isMaximized) {
+                stage.setMaximized(true);
+            }
+
+            System.out.println(" Tela de gerar prova aberta com sucesso!");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println(" Erro ao abrir tela de gerar prova: " + e.getMessage());
+        }
+    }
     /* ── Abrir Tela Buscar ────────────────────────────────────── */
     private void abrirTelaBuscar() {
         try {
@@ -168,7 +231,6 @@ public class TelaAdicionarDiscController implements Initializable {
                 stage.setMaximized(true);
             }
 
-            System.out.println("✅ Volta realizada com sucesso!");
 
         } catch (Exception e) {
             e.printStackTrace();
