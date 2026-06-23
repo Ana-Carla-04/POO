@@ -190,6 +190,7 @@ public class QuestaoDAO implements DAO<Questao> {
         int idQuestao = rs.getInt("id");
         String enunciado = rs.getString("enunciado");
         Nivel nivel = Nivel.deInt(rs.getInt("nivel"));
+        String assunto = rs.getString("assunto");
 
         if ("MultiplaEscolha".equals(tipo)) {
             MultiplaEscolha me = new MultiplaEscolha();
@@ -197,6 +198,7 @@ public class QuestaoDAO implements DAO<Questao> {
             me.setEnunciado(enunciado);
             me.setNivel(nivel);
             me.setDisciplina(disciplina);
+            me.setAssunto(assunto);
 
             List<String> alternativas = new ArrayList<>();
             try (PreparedStatement ps = conexao.prepareStatement(sql_buscarAlternativas)) {
@@ -216,6 +218,7 @@ public class QuestaoDAO implements DAO<Questao> {
             vf.setEnunciado(enunciado);
             vf.setNivel(nivel);
             vf.setDisciplina(disciplina);
+            vf.setAssunto(assunto);
 
             StringBuilder gabaritoMontado = new StringBuilder();
 
@@ -246,6 +249,7 @@ public class QuestaoDAO implements DAO<Questao> {
             padrao.setEnunciado(enunciado);
             padrao.setNivel(nivel);
             padrao.setDisciplina(disciplina);
+            padrao.setAssunto(assunto);
             return padrao;
         }
     }

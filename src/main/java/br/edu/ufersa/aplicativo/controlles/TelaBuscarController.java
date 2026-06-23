@@ -1,5 +1,11 @@
 package br.edu.ufersa.aplicativo.controlles;
 
+import br.edu.ufersa.aplicativo.model.entities.Questao;
+import br.edu.ufersa.aplicativo.model.DAO.QuestaoDAO;
+import br.edu.ufersa.aplicativo.model.entities.Disciplina;
+import br.edu.ufersa.aplicativo.model.DAO.DisciplinaDAO;
+import br.edu.ufersa.aplicativo.util.Conexao;
+
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -13,12 +19,17 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
 public class TelaBuscarController implements Initializable {
+    private Connection conexao;
+    private QuestaoDAO questaoDAO;
+    private DisciplinaDAO disciplinaDAO;
+
 
     // ── FXML ────────────────────────────────────────────────────────
     @FXML private StackPane centerRoot;
@@ -100,36 +111,42 @@ public class TelaBuscarController implements Initializable {
     // ================================================================
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        gerarDadosMock();
-        preencherPopupsDisciplina();
-        preencherPopupSemestre();
-        preencherPopupAssunto();
-        preencherPopupDificuldade();
-        atualizarLista();
+        try {
+            this.conexao = Conexao.abrirConexao();
+            this.questaoDAO = new QuestaoDAO(this.conexao);
+            this.disciplinaDAO = new DisciplinaDAO(this.conexao);
+
+
+            carregarDadosDoBanco();
+            preencherPopupsDisciplina();
+            preencherPopupAssunto();
+            preencherPopupDificuldade();
+            atualizarLista();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     // ================================================================
     // DADOS MOCK
     // ================================================================
 
-    private void gerarDadosMock() {
-        String[] tipos  = {"Prova", "Questão"};
-        String[] discs  = {"Matemática", "Português", "História", "Física"};
-        String[] sems   = {"2024.1", "2024.2", "2025.1"};
-        String[] diffs  = {"Fácil", "Médio", "Difícil"};
-        String[] assArr = {"Álgebra", "Gramática", "Revolução Industrial", "Cinemática"};
+    private void carregarDadosDoBanco() {
+        todosItens.clear();
 
-        for (int i = 1; i <= 24; i++) {
-            String tipo = tipos[i % 2];
-            String disc = discs[i % discs.length];
-            String sem  = sems[i % sems.length];
-            String diff = diffs[i % diffs.length];
-            String ass  = assArr[i % assArr.length];
-            todosItens.add(new ItemBusca(
-                    tipo + " " + i + " — " + disc,
-                    tipo, disc, sem, ass, diff
-            ));
+        try {
+            List<Questao> questoesDoBanco = questaoDAO.listar();
+
+            for (Questao q : questoesDoBanco) {
+                todosItens.add(new ItemBusca(q));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Erro ao carregar os dados reais na tela de busca.");
         }
+
         itensFiltrados.addAll(todosItens);
     }
 
@@ -138,37 +155,64 @@ public class TelaBuscarController implements Initializable {
     // ================================================================
 
     private void preencherPopupsDisciplina() {
-        preencherPopupLista(popupDisciplinaProva, disciplinas, opcao -> {
-            filtroDisciplina = opcao;
-            atualizarLabelChip(chipDisciplinaProva, "disciplina", opcao);
-            fecharPopupAtual();
-            atualizarLista();
-        });
+        try {
+            List<Disciplina> disciplinasDoBanco = disciplinaDAO.listar();
 
-        preencherPopupLista(popupDisciplinaQuest, disciplinas, opcao -> {
-            filtroDisciplina = opcao;
-            atualizarLabelChip(chipDisciplinaQuest, "disciplina", opcao);
-            fecharPopupAtual();
-            atualizarLista();
-        });
-    }
+            List<String> nomesDisciplinas = new ArrayList<>();
+            for (Disciplina d : disciplinasDoBanco) {
+                nomesDisciplinas.add(d.getNome());
+            }
 
-    private void preencherPopupSemestre() {
-        preencherPopupLista(popupSemestre, semestres, opcao -> {
-            filtroSemestre = opcao;
-            atualizarLabelChip(chipSemestre, "semestre", opcao);
-            fecharPopupAtual();
-            atualizarLista();
-        });
+            preencherPopupLista(popupDisciplinaProva, nomesDisciplinas, opcao -> {
+                filtroDisciplina = opcao;
+                atualizarLabelChip(chipDisciplinaProva, "disciplina", opcao);
+                fecharPopupAtual();
+                atualizarLista();
+            });
+
+            preencherPopupLista(popupDisciplinaQuest, nomesDisciplinas, opcao -> {
+                filtroDisciplina = opcao;
+                atualizarLabelChip(chipDisciplinaQuest, "disciplina", opcao);
+                fecharPopupAtual();
+                atualizarLista();
+            });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Erro ao carregar disciplinas no filtro.");
+        }
     }
 
     private void preencherPopupAssunto() {
-        preencherPopupLista(popupAssunto, assuntos, opcao -> {
-            filtroAssunto = opcao;
-            atualizarLabelChip(chipAssunto, "assuntos", opcao);
-            fecharPopupAtual();
-            atualizarLista();
-        });
+        try {
+            List<String> assuntosUnicos = new ArrayList<>();
+
+            if (this.questaoDAO != null) {
+                List<Questao> questoesDoBanco = this.questaoDAO.listar();
+
+                for (Questao q : questoesDoBanco) {
+                    String assunto = q.getAssunto();
+
+                    if (assunto != null && !assunto.trim().isEmpty()) {
+                        assunto = assunto.trim();
+                        if (!assuntosUnicos.contains(assunto)) {
+                            assuntosUnicos.add(assunto);
+                        }
+                    }
+                }
+            }
+
+            preencherPopupLista(popupAssunto, assuntosUnicos, opcao -> {
+                filtroAssunto = opcao;
+                atualizarLabelChip(chipAssunto, "assuntos", opcao);
+                fecharPopupAtual();
+                atualizarLista();
+            });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Erro ao carregar assuntos dinâmicos no filtro.");
+        }
     }
 
     private void preencherPopupDificuldade() {
@@ -627,14 +671,14 @@ public class TelaBuscarController implements Initializable {
         final String assunto;
         final String dificuldade; // "Fácil" | "Médio" | "Difícil"
 
-        public ItemBusca(String descricao, String tipo, String disciplina,
-                         String semestre, String assunto, String dificuldade) {
-            this.descricao   = descricao;
-            this.tipo        = tipo;
-            this.disciplina  = disciplina;
-            this.semestre    = semestre;
-            this.assunto     = assunto;
-            this.dificuldade = dificuldade;
+        public ItemBusca(Questao q) {
+            String nomeDisc = (q.getDisciplina() != null) ? q.getDisciplina().getNome() : "Geral";
+            this.descricao   = "Questão " + q.getCodigo() + " — " + nomeDisc;
+            this.tipo        = "Questões"; // Identifica como questão nos filtros
+            this.disciplina  = nomeDisc;
+            this.semestre    = ""; // Questões normais não costumam ter semestre fixo
+            this.assunto     = q.getAssunto() != null ? q.getAssunto() : "Geral";
+            this.dificuldade = (q.getNivel() != null) ? q.getNivel().getDescricaoTela() : "Fácil";
         }
     }
 }

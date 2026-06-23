@@ -24,4 +24,17 @@ public enum Nivel {
 
         throw new IllegalArgumentException("Nível não existe no banco: " + valorBanco);
     }
+
+    public String getDescricaoTela() {
+        switch (this) {
+            case FACIL:
+                return "Fácil";
+            case MEDIO:
+                return "Médio";
+            case DIFICIL:
+                return "Difícil";
+            default:
+                return "Indefinido";
+        }
+    }
 }

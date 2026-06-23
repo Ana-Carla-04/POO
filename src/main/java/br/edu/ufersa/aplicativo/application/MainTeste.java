@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class MainTesta {
+public class MainTeste {
     public static void main(String[] args) {
         try (Connection conexao = Conexao.abrirConexao()) {
 

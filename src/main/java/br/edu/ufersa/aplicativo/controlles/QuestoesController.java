@@ -3,6 +3,10 @@ package br.edu.ufersa.aplicativo.controlles;
 import br.edu.ufersa.aplicativo.application.Contexto;
 import br.edu.ufersa.aplicativo.application.GerenteDeCena;
 import br.edu.ufersa.aplicativo.controlles.TelaInicialController.DisciplinaInfo;
+import br.edu.ufersa.aplicativo.model.DAO.QuestaoDAO;
+import br.edu.ufersa.aplicativo.model.entities.Questao;
+import br.edu.ufersa.aplicativo.util.Conexao;
+
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -17,6 +21,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -53,8 +58,6 @@ public class QuestoesController implements Initializable {
     private DisciplinaInfo disciplinaInfo;
     private Map<String, List<QuestaoInfo>> questoesPorDisciplina;
 
-
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         disciplinaInfo = Contexto.getDisciplinaSelecionada();
@@ -69,56 +72,38 @@ public class QuestoesController implements Initializable {
         ));
         nivelCombo.setPromptText("nível da questão");
         nivelCombo.getSelectionModel().selectFirst();
+
         carregarQuestoes();
     }
 
     private void inicializarQuestoesPorDisciplina() {
         questoesPorDisciplina = new HashMap<>();
 
-        // Questões de Matemática
-        questoesPorDisciplina.put("Matemática", Arrays.asList(
-                new QuestaoInfo("QST001", "Álgebra", "Nível 2", "multipla escolha",
-                        "Qual é o valor de x na equação 2x + 3 = 7?",
-                        "b) x = 2", new String[]{"a) x = 1", "b) x = 2", "c) x = 3", "d) x = 4"}),
-                new QuestaoInfo("QST002", "Geometria", "Nível 1", "verdadeiro/falso",
-                        "Um triângulo equilátero possui todos os lados iguais.",
-                        "a) Verdadeiro", new String[]{"a) Verdadeiro", "b) Falso"}),
-                new QuestaoInfo("QST003", "Trigonometria", "Nível 3", "multipla escolha",
-                        "Qual o valor de sen(30°)?",
-                        "b) 0,5", new String[]{"a) 0", "b) 0,5", "c) 1", "d) 1,5"})
-                
-        ));
+        try {
+            QuestaoDAO questaoDAO = new QuestaoDAO(Conexao.abrirConexao());
+            List<Questao> todasAsQuestoesDoBanco = questaoDAO.listar();
 
-        // Questões de Português
-        questoesPorDisciplina.put("Português", Arrays.asList(
-                new QuestaoInfo("QST007", "Gramática", "Nível 1", "multipla escolha",
-                        "Qual é o plural de 'cidadão'?",
-                        "a) cidadãos", new String[]{"a) cidadãos", "b) cidadões", "c) cidadães", "d) cidadãos"}),
-                new QuestaoInfo("QST008", "Interpretação", "Nível 2", "discursiva",
-                        "Analise a frase: 'O sol brilhava intensamente'.",
-                        "a) O sol", new String[]{"a) O sol", "b) brilhava", "c) intensamente", "d) O sol brilhava"})
-        ));
+            for (Questao q : todasAsQuestoesDoBanco) {
+                String nomeDisciplina = (q.getDisciplina() != null) ? q.getDisciplina().getNome() : "Geral";
 
-        // Questões de História
-        questoesPorDisciplina.put("História", Arrays.asList(
-                new QuestaoInfo("QST010", "Brasil", "Nível 2", "multipla escolha",
-                        "Em que ano o Brasil foi descoberto?",
-                        "b) 1500", new String[]{"a) 1492", "b) 1500", "c) 1502", "d) 1498"})
-        ));
+                questoesPorDisciplina.putIfAbsent(nomeDisciplina, new ArrayList<>());
 
-        // Questões de Física
-        questoesPorDisciplina.put("Física", Arrays.asList(
-                new QuestaoInfo("QST015", "Mecânica", "Nível 2", "multipla escolha",
-                        "Qual a fórmula da segunda lei de Newton?",
-                        "a) F = m.a", new String[]{"a) F = m.a", "b) F = m.v", "c) F = m/t", "d) F = v/t"})
-        ));
+                QuestaoInfo info = new QuestaoInfo(
+                        String.valueOf(q.getCodigo()),
+                        q.getAssunto() != null ? q.getAssunto() : "Sem Assunto",
+                        "Nível " + q.getNivel(),
+                        "discursiva",
+                        q.getEnunciado(),
+                        "",
+                        new String[]{}
+                );
 
-        // Questões de Biologia
-        questoesPorDisciplina.put("Biologia", Arrays.asList(
-                new QuestaoInfo("QST019", "Biologia Geral", "Nível 1", "multipla escolha",
-                        "Qual a unidade básica da vida?",
-                        "c) Célula", new String[]{"a) Átomo", "b) Molécula", "c) Célula", "d) Tecido"})
-        ));
+                questoesPorDisciplina.get(nomeDisciplina).add(info);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Erro ao inicializar dados do banco: " + e.getMessage());
+        }
     }
 
     @FXML
@@ -174,23 +159,15 @@ public class QuestoesController implements Initializable {
     @FXML private void handleMenuBuscar(MouseEvent e) {
         abrirTelaBuscar();
     }
+
     @FXML
     private void handleMenuGerarProva(MouseEvent event) {
-        try {
-            System.out.println(" Abrindo tela de gerar prova...");
-            GerenteDeCena.carregarCena("/br/edu/ufersa/aplicativo/views/TelaGerarProvaView.fxml", "/br/edu/ufersa/aplicativo/css/TelaGerarProvaStyle.css", "Gerador de Provas - Gerar Prova");
-            System.out.println(" Tela de gerar prova aberta com sucesso!");
-            } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println(" Erro ao abrir tela de gerar prova: " + e.getMessage());
+        abrirTelaGerarProva();
     }
-        }
 
-    /* ── Abrir Tela Gerar Prova ────────────────────────────────────── */
     private void abrirTelaGerarProva(){
         try{
             System.out.println(" Abrindo tela de gerar prova...");
-
             GerenteDeCena.carregarCena("/br/edu/ufersa/aplicativo/views/TelaGerarProvaView.fxml", "/br/edu/ufersa/aplicativo/css/TelaGerarProvaStyle.css", "Gerador de Provas - Gerar Prova");
         } catch (Exception e) {
             e.printStackTrace();
@@ -201,7 +178,6 @@ public class QuestoesController implements Initializable {
     private void abrirTelaBuscar() {
         try {
             System.out.println("🔍 Abrindo tela de buscar...");
-
             GerenteDeCena.carregarCena("/br/edu/ufersa/aplicativo/views/TelaBuscarView.fxml", "/br/edu/ufersa/aplicativo/css/TelaBuscarStyle.css", "Gerador de Provas - Buscar");
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -283,22 +259,15 @@ public class QuestoesController implements Initializable {
             return;
         }
 
-        // Calcula quantas linhas serão necessárias (metade das alternativas)
         int metade = (int) Math.ceil(alternativas.length / 2.0);
 
         for (int i = 0; i < alternativas.length; i++) {
-            // Coluna 0: Primeira metade das alternativas (a, b, c...)
-            // Coluna 1: Segunda metade das alternativas (d, e, f...)
             int col = i < metade ? 0 : 1;
             int row = i < metade ? i : i - metade;
 
             Label altLabel = new Label(alternativas[i]);
-
-            // ═══════════════════════════════════════════════════════════
-            // HABILITAR QUEBRA DE LINHA E CRESCIMENTO
-            // ═══════════════════════════════════════════════════════════
-            altLabel.setWrapText(true);  // ← Quebra o texto
-            altLabel.setMaxWidth(Double.MAX_VALUE);  // ← Permite crescer
+            altLabel.setWrapText(true);
+            altLabel.setMaxWidth(Double.MAX_VALUE);
 
             if (alternativas[i].equals(gabarito)) {
                 altLabel.getStyleClass().add("det-gabarito");
@@ -308,10 +277,9 @@ public class QuestoesController implements Initializable {
 
             GridPane.setColumnIndex(altLabel, col);
             GridPane.setRowIndex(altLabel, row);
-            GridPane.setFillWidth(altLabel, true);  // ← Ocupa toda a largura
+            GridPane.setFillWidth(altLabel, true);
             gabaritoGrid.getChildren().add(altLabel);
         }
-
     }
 
     private void selecionarMenu(StackPane item) {
