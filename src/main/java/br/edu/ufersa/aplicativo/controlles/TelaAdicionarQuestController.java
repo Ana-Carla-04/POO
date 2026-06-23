@@ -157,11 +157,27 @@ public class TelaAdicionarQuestController implements Initializable {
                     me.setDisciplina(disciplina);
                     me.setNivel(nivel);
                     me.setAssunto(fieldAssunto.getText());
-                    List<String> alts = Arrays.asList(fieldAltA.getText(), fieldAltB.getText(), fieldAltC.getText(), fieldAltD.getText());
+
+                    List<String> alts = Arrays.asList(
+                            fieldAltA.getText(),
+                            fieldAltB.getText(),
+                            fieldAltC.getText(),
+                            fieldAltD.getText()
+                    );
                     me.setAlternativas(alts);
-                    // Definir o gabarito como a alternativa selecionada
+
+                    // Pega a letra selecionada e converte para o texto da alternativa
                     RadioButton rbSelecionado = (RadioButton) grupoGabarito.getSelectedToggle();
-                    me.setResposta(rbSelecionado.getText()); 
+                    String letraSelecionada = rbSelecionado.getText(); // "a", "b", "c" ou "d"
+                    String respostaTexto = switch (letraSelecionada) {
+                        case "a" -> fieldAltA.getText();
+                        case "b" -> fieldAltB.getText();
+                        case "c" -> fieldAltC.getText();
+                        case "d" -> fieldAltD.getText();
+                        default  -> "";
+                    };
+                    me.setResposta(respostaTexto);
+
                     questao = me;
                 }
                 case DISCURSIVA -> {
@@ -179,12 +195,14 @@ public class TelaAdicionarQuestController implements Initializable {
                     vf.setDisciplina(disciplina);
                     vf.setNivel(nivel);
                     vf.setAssunto(fieldAssunto.getText());
-                    
-                    // Ajuste para salvar alternativas VF
-                    vf.getAlternativas().add("Verdadeiro");
-                    vf.getAlternativas().add("Falso");
-                    
-                    vf.setResposta(((RadioButton) grupoGabarito.getSelectedToggle()).getText());
+
+                    String respostaSelecionada = ((RadioButton) grupoGabarito.getSelectedToggle()).getText();
+                    // "Verdadeiro" ou "Falso"
+
+                    // adicionarAlternativa() mantém alternativas e respostas sincronizadas
+                    vf.adicionarAlternativa("Verdadeiro", "Verdadeiro".equals(respostaSelecionada));
+                    vf.adicionarAlternativa("Falso",      "Falso".equals(respostaSelecionada));
+
                     questao = vf;
                 }
             }

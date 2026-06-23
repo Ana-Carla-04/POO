@@ -19,9 +19,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class QuestaoDAO implements DAO<Questao> {
-    private static final String sql_inserir = "INSERT INTO questao (enunciado, nivel, tipo, disciplina_id) VALUES (?, ?, ?, ?);";
-    private static final String sql_alterar = "UPDATE questao SET enunciado = ?, nivel = ?, tipo = ?, disciplina_id = ? WHERE id = ?;";
-    private static final String sql_deletar = "DELETE FROM questao WHERE id = ?;";
+    private static final String sql_inserir =
+            "INSERT INTO questao (enunciado, nivel, tipo, disciplina_id, assunto) VALUES (?, ?, ?, ?, ?)";
+    private static final String sql_alterar =
+            "UPDATE questao SET enunciado = ?, nivel = ?, tipo = ?, disciplina_id = ?, assunto = ? WHERE id = ?;";    private static final String sql_deletar = "DELETE FROM questao WHERE id = ?;";
 
     private static final String sql_listar = "SELECT q.*, d.nome as disciplina_nome, d.codigo as disciplina_codigo " +
             "FROM questao q INNER JOIN disciplina d ON q.disciplina_id = d.id;";
@@ -59,6 +60,7 @@ public class QuestaoDAO implements DAO<Questao> {
             }
 
             ps.setInt(4, questao.getDisciplina().getId());
+            ps.setString(5, questao.getAssunto());
             ps.executeUpdate();
 
             try (ResultSet rs = ps.getGeneratedKeys()) {
@@ -71,7 +73,8 @@ public class QuestaoDAO implements DAO<Questao> {
         if (questao instanceof MultiplaEscolha) {
             MultiplaEscolha me = (MultiplaEscolha) questao;
             if (me.getAlternativas() != null && !me.getAlternativas().isEmpty()) {
-                salvarAlternativasEmLote(me.getCodigo(), me.getAlternativas(), null);
+                // Passa a resposta correta para marcar o campo "verdadeira" no banco
+                salvarAlternativasMultipla(me.getCodigo(), me.getAlternativas(), me.getResposta());
             }
         }
 
@@ -138,7 +141,8 @@ public class QuestaoDAO implements DAO<Questao> {
             }
 
             ps.setInt(4, questao.getDisciplina().getId());
-            ps.setInt(5, questao.getCodigo());
+            ps.setString(5, questao.getAssunto());
+            ps.setInt(6, questao.getCodigo());
             ps.executeUpdate();
         }
 
@@ -196,15 +200,18 @@ public class QuestaoDAO implements DAO<Questao> {
         }
     }
 
+    // TRECHO CORRIGIDO — método criarQuestaoDoResultSet em QuestaoDAO.java
+// Substitua apenas esse método no seu QuestaoDAO existente
+
     private Questao criarQuestaoDoResultSet(ResultSet rs) throws SQLException {
         Disciplina disciplina = new Disciplina(rs.getString("disciplina_nome"), rs.getString("disciplina_codigo"));
         disciplina.setId(rs.getInt("disciplina_id"));
 
-        String tipo = rs.getString("tipo");
-        int idQuestao = rs.getInt("id");
+        String tipo      = rs.getString("tipo");
+        int idQuestao    = rs.getInt("id");
         String enunciado = rs.getString("enunciado");
-        Nivel nivel = Nivel.deInt(rs.getInt("nivel"));
-        String assunto = rs.getString("assunto");
+        Nivel nivel      = Nivel.deInt(rs.getInt("nivel"));
+        String assunto   = rs.getString("assunto");
 
         if ("MultiplaEscolha".equals(tipo)) {
             MultiplaEscolha me = new MultiplaEscolha();
@@ -215,15 +222,24 @@ public class QuestaoDAO implements DAO<Questao> {
             me.setAssunto(assunto);
 
             List<String> alternativas = new ArrayList<>();
+            String resposta = "";
+
             try (PreparedStatement ps = conexao.prepareStatement(sql_buscarAlternativas)) {
                 ps.setInt(1, idQuestao);
                 try (ResultSet rsA = ps.executeQuery()) {
                     while (rsA.next()) {
-                        alternativas.add(rsA.getString("texto_alternativa"));
+                        String texto      = rsA.getString("texto_alternativa");
+                        boolean verdadeira = rsA.getBoolean("verdadeira");
+                        alternativas.add(texto);
+                        if (verdadeira) resposta = texto;
                     }
                 }
             }
+
+            // IMPORTANTE: setar alternativas ANTES de setar resposta,
+            // pois setResposta valida se a resposta está na lista
             me.setAlternativas(alternativas);
+            if (!resposta.isEmpty()) me.setResposta(resposta);
             return me;
 
         } else if ("VerdadeiroFalso".equals(tipo)) {
@@ -234,39 +250,44 @@ public class QuestaoDAO implements DAO<Questao> {
             vf.setDisciplina(disciplina);
             vf.setAssunto(assunto);
 
-            StringBuilder gabaritoMontado = new StringBuilder();
+            List<String> alternativas = new ArrayList<>();
+            String respostaFinal = "";
 
             try (PreparedStatement ps = conexao.prepareStatement(sql_buscarAlternativas)) {
                 ps.setInt(1, idQuestao);
                 try (ResultSet rsA = ps.executeQuery()) {
                     while (rsA.next()) {
-                        String textoAlt = rsA.getString("texto_alternativa");
-                        boolean valorVerdade = rsA.getBoolean("verdadeira");
-
-                        vf.getAlternativas().add(textoAlt);
-
-                        gabaritoMontado.append(valorVerdade ? "V" : "F").append("-");
+                        String texto       = rsA.getString("texto_alternativa");
+                        boolean verdadeira = rsA.getBoolean("verdadeira");
+                        alternativas.add(texto);
+                        if (verdadeira) respostaFinal = texto;
                     }
                 }
             }
 
-            if (gabaritoMontado.length() > 0) {
-                gabaritoMontado.setLength(gabaritoMontado.length() - 1);
-                vf.setResposta(gabaritoMontado.toString());
-            }
-
+            vf.getAlternativas().clear();
+            vf.getAlternativas().addAll(alternativas);
+            if (!respostaFinal.isEmpty()) vf.setResposta(respostaFinal);
             return vf;
 
         } else {
-            Discursiva discursiva = new Discursiva();
-            discursiva.setCodigo(idQuestao);
-            discursiva.setEnunciado(enunciado);
-            discursiva.setNivel(nivel);
-            discursiva.setDisciplina(disciplina);
-            discursiva.setAssunto(assunto);
-            // Assumindo que a resposta discursiva está em 'assunto' ou campo equivalente se 'tipo' for discursiva
-            // Você pode precisar ajustar como a resposta é recuperada se estiver em outra tabela.
-            return discursiva;
+            Discursiva d = new Discursiva();
+            d.setCodigo(idQuestao);
+            d.setEnunciado(enunciado);
+            d.setNivel(nivel);
+            d.setDisciplina(disciplina);
+            d.setAssunto(assunto);
+
+            // Busca a resposta da discursiva nas alternativas (se houver)
+            try (PreparedStatement ps = conexao.prepareStatement(sql_buscarAlternativas)) {
+                ps.setInt(1, idQuestao);
+                try (ResultSet rsA = ps.executeQuery()) {
+                    if (rsA.next()) {
+                        d.setResposta(rsA.getString("texto_alternativa"));
+                    }
+                }
+            }
+            return d;
         }
     }
 
@@ -275,6 +296,18 @@ public class QuestaoDAO implements DAO<Questao> {
         try (PreparedStatement stmt = conexao.prepareStatement(sql)) {
             stmt.executeUpdate();
             System.out.println("Banco de questões zerado com sucesso!");
+        }
+    }
+
+    private void salvarAlternativasMultipla(int questaoId, List<String> alternativas, String respostaCorreta) throws SQLException {
+        try (PreparedStatement ps = conexao.prepareStatement(sql_inserirAlternativa)) {
+            for (String alt : alternativas) {
+                ps.setInt(1, questaoId);
+                ps.setString(2, alt);
+                ps.setBoolean(3, alt.equals(respostaCorreta)); // marca true na correta
+                ps.addBatch();
+            }
+            ps.executeBatch();
         }
     }
 }
